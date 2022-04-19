@@ -18,13 +18,20 @@
  *
  * */
 
+typedef struct {
+    int ligne;
+    int colonne;
+} CASE;
+
 void creer_masque(int masque[16][16], int taille);
 
 void afficher_tab(int tab[16][16], int taille);
 
-void afficher_grille(int tab[16][16], int taille, int masque[16][16]);
+void afficher_grille(int tab[16][16], int masque[16][16], int taille);
 
-        int coup_valide(int grille[16][16], int ligne, int colonne);
+CASE valider_case(int grille[16][16], int ligne, int colonne);
+
+int coup_valide(int grille[16][16], int ligne, int colonne);
 
 int coup_correct(int grille[16][16], int ligne, int colonne);
 

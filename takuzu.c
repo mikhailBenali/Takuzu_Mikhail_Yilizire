@@ -13,19 +13,20 @@ void creer_masque(int masque[16][16], int taille) {
 
         do { // On veut au moins une valeur affichée par ligne
 
-            limite_uns = taille / 2 + 1; // Le nombre maximal de valeurs affichées est taille/2 + 1
-            nb_uns = 0; // Variable qui compte le nombre de 1 présents dans la ligne actuelle
+            limite_uns = taille * 2 / 3; // Le nombre maximal de valeurs affichées
+            nb_uns = 0; // Variable qui compte le nombre de 1 présent dans la ligne actuelle
 
             for (int j = 0; j < taille; j++) {
 
-                if (nb_uns < limite_uns && rand() % 2 == 1) { // Si la limite de 1 n'est pas atteinte et que le rand donne 1
+                if (nb_uns < limite_uns &&
+                    rand() % 2 == 1) { // Si la limite de 1 n'est pas atteinte et que le rand donne 1
                     masque[i][j] = 1;
                     nb_uns++;
                 } else {
                     masque[i][j] = 0;
                 }
             }
-        } while (nb_uns < taille / 2);
+        } while (nb_uns < taille * 1 / 3);
     }
 }
 
@@ -39,7 +40,7 @@ void afficher_tab(int tab[16][16], int taille) { // Fonction de test pour affich
     }
 }
 
-void afficher_grille(int tab[16][16], int taille, int masque[16][16]) { // Fonction qui applique lee masque à la grille
+void afficher_grille(int tab[16][16], int masque[16][16], int taille) { // Fonction qui applique lee masque à la grille
     for (int i = 0; i < taille; i++) {
         for (int j = 0; j < taille; j++) {
             if (masque[i][j] == 1) {
@@ -52,6 +53,16 @@ void afficher_grille(int tab[16][16], int taille, int masque[16][16]) { // Fonct
     }
 }
 
+CASE valider_case(int grille[16][16], int ligne, int colonne) {
+    CASE case_joueur;
+    printf("Quelle ligne ? ");
+    scanf("%d", case_joueur.ligne);
+    printf("Quelle colonne ? ");
+    scanf("%d", case_joueur.colonne);
+    return case_joueur;
+}
+
 int coup_valide(int grille[16][16], int ligne, int colonne) {
 
 }
+
