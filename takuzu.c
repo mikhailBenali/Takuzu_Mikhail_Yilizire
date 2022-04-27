@@ -71,6 +71,23 @@ CASE saisir_case(int grille[16][16]) {
     return case_joueur;
 }
 
+int verifier_haut(int grille[16][16], masque[16][16], CASE case_joueur) {
+
+    if (masque[case_joueur.ligne]) {
+
+    }
+
+    if (grille[case_joueur.ligne - 1][case_joueur.colonne] == case_joueur.chiffre &&
+        grille[case_joueur.ligne - 2][case_joueur.colonne] == case_joueur.chiffre) {
+
+        printf("Impossible");
+        return 1;
+    }
+
+    return 0;
+
+}
+
 int coup_valide(int grille[16][16], int masque[16][16], CASE case_joueur) {
     if (masque[case_joueur.ligne][case_joueur.colonne] == 1)
         // Si la valeur est déjà affichée
