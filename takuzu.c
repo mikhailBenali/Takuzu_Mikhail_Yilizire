@@ -53,12 +53,21 @@ void afficher_grille(int tab[16][16], int masque[16][16], int taille) { // Fonct
     }
 }
 
-CASE valider_case(int grille[16][16], int ligne, int colonne) {
+CASE saisir_case(int grille[16][16]) {
     CASE case_joueur;
-    printf("Quelle ligne ? ");
-    scanf("%d", case_joueur.ligne);
-    printf("Quelle colonne ? ");
-    scanf("%d", case_joueur.colonne);
+    do {
+        printf("Quelle ligne ?\n");
+        scanf("%d", &case_joueur.ligne);
+        case_joueur.ligne--;
+        printf("Quelle colonne ?\n");
+        scanf("%d", &case_joueur.colonne);
+        case_joueur.colonne--;
+        printf("Quel chiffre ?\n");
+        scanf("%d", &case_joueur.chiffre);
+
+    } while (case_joueur.colonne < 0 || case_joueur.colonne > 3
+             || case_joueur.ligne < 0 || case_joueur.ligne > 3
+             || (case_joueur.chiffre != 0 && case_joueur.chiffre != 1));
     return case_joueur;
 }
 

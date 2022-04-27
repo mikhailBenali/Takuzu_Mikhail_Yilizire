@@ -24,7 +24,7 @@ int main() {
             taille = 4;
             break;
     }*/
-    taille = 8; // Pour le début on ne propose pas la taille de la grille, on impose 4
+    taille = 4; // Pour le début on ne propose pas la taille de la grille, on impose 4
 
     int grille[16][16] = {{1, 0, 0, 1},
                           {1, 0, 1, 0},
@@ -47,7 +47,16 @@ int main() {
     printf("\n");
 
     printf("Grille masquee\n");
-    afficher_grille(grille, taille, masque);
+    afficher_grille(grille, masque, taille);
     printf("\n");
+
+    case_joueur = saisir_case(grille);
+
+    if (coup_correct(grille, masque, case_joueur)) {
+        printf("Le coup est valide !");
+    } else {
+        printf("Le coup est invalide !");
+    }
+
     return 0;
 }

@@ -21,6 +21,7 @@
 typedef struct {
     int ligne;
     int colonne;
+    int chiffre;
 } CASE;
 
 void creer_masque(int masque[16][16], int taille);
@@ -31,10 +32,10 @@ void afficher_grille(int tab[16][16], int masque[16][16], int taille);
 
 int valeur_choisie(int val);
 
-CASE valider_case(int grille[16][16], int ligne, int colonne);
+CASE saisir_case(int grille[16][16]);
 
-int coup_valide(int grille[16][16], int ligne, int colonne);
+int coup_valide(int grille[16][16], int masque[16][16], CASE case_joueur);
 
-int coup_correct(int grille[16][16], int ligne, int colonne);
+int coup_correct(int grille[16][16], int masque[16][16], CASE case_joueur);
 
 #endif //TAKUZU_MIKHAIL_YILIZIRE_TAKUZU_H
