@@ -88,7 +88,7 @@ int verifier_haut(int grille[16][16], masque[16][16], CASE case_joueur) {
 
 }
 
-int coup_valide(int grille[16][16], int masque[16][16], CASE case_joueur) {
+int coup_valide(int grille[16][16], int masque[16][16], CASE case_joueur, int taille) {
     if (masque[case_joueur.ligne][case_joueur.colonne] == 1)
         // Si la valeur est déjà affichée
     {
@@ -96,25 +96,41 @@ int coup_valide(int grille[16][16], int masque[16][16], CASE case_joueur) {
         saisir_case(grille);
     }
     /*
-     * vérifier que les deux chiffres en haut et en bas soient affichés
-     * vérifier que les deux chiffres en bas et en bas soient affichés
-     * vérifier que les deux chiffres à droite et en bas soient affichés
-     * vérifier que les deux chiffres à gauche et en bas soient affichés
-     *
-     *
-     *
-     *
-     *
+     * vérifier que les deux chiffres (haut/bas/gauche/droite) set en bas soient affichés
      */
 
-    //if ()
+    // Vérification du haut
+    if (case_joueur.ligne >= 2) {
+        if (verifier_haut(grille, masque, case_joueur)) {
+            return 1;
+        }
+    }
 
-    return 1; // Le coup est valide
+        // Vérification du bas
+    else if (case_joueur.ligne <= taille - 2) {
+        if (verifier_bas(grille, masque, case_joueur)) {
+            return 1;
+        }
+    }
+
+    // Vérification de la gauche
+    if (case_joueur.colonne >= 2) {
+        if (verifier_gauche(grille, masque, case_joueur)) {
+            return 1;
+        }
+    }
+        // Vérification de la droite
+    else if (case_joueur.colonne < taille - 2)
+        if (verifier_droite(grille, masque, case_joueur)) {
+            return 1;
+        }
+
+    return 0; // Le coup est insvalide
 }
 
 
-int coup_correct(int grille[16][16], int masque[16][16], CASE case_joueur) {
-    coup_valide(grille, masque, case_joueur);
+int coup_correct(int grille[16][16], int masque[16][16], CASE case_joueur, int taille) {
+    coup_valide(grille, masque, case_joueur, taille);
     if (grille[case_joueur.ligne][case_joueur.colonne] == case_joueur.chiffre) {
         return 1;
     } else {

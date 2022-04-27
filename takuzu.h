@@ -34,8 +34,16 @@ int valeur_choisie(int val);
 
 CASE saisir_case(int grille[16][16]);
 
-int coup_valide(int grille[16][16], int masque[16][16], CASE case_joueur);
+int coup_valide(int grille[16][16], int masque[16][16], CASE case_joueur, int taille);
 
-int coup_correct(int grille[16][16], int masque[16][16], CASE case_joueur);
+int coup_correct(int grille[16][16], int masque[16][16], CASE case_joueur, int tailles);
+
+int verifier_haut(int grille[16][16], int masque[16][16], CASE case_joueur);
+
+int verifier_bas(int grille[16][16], int masque[16], CASE case_joueur);
+
+int verifier_droite(int grille[16][16], int masque[16], CASE case_joueur);
+
+int verifier_gauche(int grille[16][16], int masque[16], CASE case_joueur);
 
 #endif //TAKUZU_MIKHAIL_YILIZIRE_TAKUZU_H

@@ -52,7 +52,7 @@ int main() {
 
     case_joueur = saisir_case(grille);
 
-    if (coup_correct(grille, masque, case_joueur)) {
+    if (coup_correct(grille, masque, case_joueur, taille)) {
         printf("Le coup est valide !");
     } else {
         printf("Le coup est invalide !");
