@@ -40,7 +40,7 @@ void afficher_tab(int tab[16][16], int taille) { // Fonction de test pour affich
     }
 }
 
-void afficher_grille(int tab[16][16], int masque[16][16], int taille) { // Fonction qui applique lee masque à la grille
+void afficher_grille(int tab[16][16], int masque[16][16], int taille) { // Fonction qui applique le masque à la grille
     for (int i = 0; i < taille; i++) {
         for (int j = 0; j < taille; j++) {
             if (masque[i][j] == 1) {
@@ -62,7 +62,36 @@ CASE valider_case(int grille[16][16], int ligne, int colonne) {
     return case_joueur;
 }
 
-int coup_valide(int grille[16][16], int ligne, int colonne) {
+int coup_valide(int grille[16][16], int masque[16][16], CASE case_joueur) {
+    if (masque[case_joueur.ligne][case_joueur.colonne] == 1)
+        // Si la valeur est déjà affichée
+    {
+        printf("La valeur que vous avez saisie n'est pas valide\n");
+        saisir_case(grille);
+    }
+    /*
+     * vérifier que les deux chiffres en haut et en bas soient affichés
+     * vérifier que les deux chiffres en bas et en bas soient affichés
+     * vérifier que les deux chiffres à droite et en bas soient affichés
+     * vérifier que les deux chiffres à gauche et en bas soient affichés
+     *
+     *
+     *
+     *
+     *
+     */
 
+    //if ()
+
+    return 1; // Le coup est valide
 }
 
+
+int coup_correct(int grille[16][16], int masque[16][16], CASE case_joueur) {
+    coup_valide(grille, masque, case_joueur);
+    if (grille[case_joueur.ligne][case_joueur.colonne] == case_joueur.chiffre) {
+        return 1;
+    } else {
+        return 0;
+    }
+}

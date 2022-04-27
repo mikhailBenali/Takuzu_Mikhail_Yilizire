@@ -2,6 +2,7 @@
 
 int main() {
     int taille;
+    CASE case_joueur;
     /*
     do {
         printf("Quelle taille de grille voulez-vous ? : \n");
