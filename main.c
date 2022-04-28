@@ -26,21 +26,13 @@ int main() {
     }*/
     taille = 4; // Pour le début on ne propose pas la taille de la grille, on impose 4
 
-    int grille[16][16] = {{1, 0, 0, 1},
-                          {1, 0, 1, 0},
-                          {0, 1, 1, 0},
-                          {0, 1, 0, 1}};
+    int grille[4][4] = {{1, 0, 0, 1},
+                        {1, 0, 1, 0},
+                        {0, 1, 1, 0},
+                        {0, 1, 0, 1}};
 
-    int masque[16][16];
-    for (int i = 0; i < taille; i++) {
-        for (int j = 0; i < taille; i++) {
-            masque[i][j] = 0;
-        }
-    }
+    int masque[4][4];
     creer_masque(masque, taille);
-    printf("Masque\n");
-    afficher_tab(masque, taille);
-    printf("\n");
 
     printf("Grille\n");
     afficher_tab(grille, taille);
@@ -50,13 +42,21 @@ int main() {
     afficher_grille(grille, masque, taille);
     printf("\n");
 
-    case_joueur = saisir_case(grille);
+    while (1) {
+        jouer(grille, masque, case_joueur, taille);
 
-    if (coup_correct(grille, masque, case_joueur, taille)) {
-        printf("Le coup est valide !");
-    } else {
-        printf("Le coup est invalide !");
+        // S'il y a au moins une case encore non affichée dans la grille on continue
+        for (int i = 0; i < taille; i++) {
+            for (int j = 0; j < taille; j++) {
+                if (masque[i][j] == 0) {
+                    afficher_tab(masque, taille);
+                    jouer(grille, masque, case_joueur, taille);
+                }
+            }
+        }
+        break;
     }
 
+    printf("Bravo vous avez resolu le Takuzu\n");
     return 0;
 }
