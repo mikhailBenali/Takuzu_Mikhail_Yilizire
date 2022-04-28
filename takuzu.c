@@ -4,6 +4,8 @@
 
 #include "takuzu.h"
 
+int nb_vies = 3;
+
 void creer_masque(int masque[4][4], int taille) {
     int limite_uns; // Le nombre maximum de valeurs affichées par ligne
     // Il faut qu'il n'y ait pas trop de 1 ou de 0 dans chaque ligne
@@ -139,33 +141,49 @@ int coup_valide(int grille[4][4], int masque[4][4], CASE case_joueur, int taille
     // vérifier que les deux chiffres (haut/bas/gauche/droite) set en bas soient affichés
 
     // Vérification du haut
+
     if (case_joueur.ligne >= 2) {
+        nb_verif++;
         if (verifier_haut(grille, masque, case_joueur)) {
-            return 1;
+            verif_ok++;
         }
     }
 
-        // Vérification du bas
-    else if (case_joueur.ligne <= taille - 2) {
+    // Vérification du bas
+    if (case_joueur.ligne <= taille - 2) {
+        nb_verif++;
         if (verifier_bas(grille, masque, case_joueur)) {
-            return 1;
+            verif_ok++;
         }
     }
 
     // Vérification de la gauche
     if (case_joueur.colonne >= 2) {
+        nb_verif++;
         if (verifier_gauche(grille, masque, case_joueur)) {
-            return 1;
+            verif_ok++;
         }
     }
-        // Vérification de la droite
-    else if (case_joueur.colonne < taille - 2)
+    // Vérification de la droite
+    if (case_joueur.colonne < taille - 2) {
+        nb_verif++;
         if (verifier_droite(grille, masque, case_joueur)) {
-            return 1;
+            verif_ok++;
         }
+    }
 
-    return 0; // Le coup est insvalide
+    if (verif_ok ==
+        nb_verif) { // S'il y a autant de vérifications validées que le nombre de vérifications, elles sont toutes validées
+        return 1;
+    } else {
+        return 0; // Le coup est invalide
+    }
 }
+
+/*int afficher_indice(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
+
+}*/
+
 
 int coup_correct(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
 
@@ -183,4 +201,10 @@ int coup_correct(int grille[4][4], int masque[4][4], CASE case_joueur, int taill
         printf("Ce coup n'est pas valide\n");
         nb_vies--;
     }
+}
+
+void jouer(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
+    afficher_grille(grille, masque, taille);
+    case_joueur = saisir_case();
+    coup_correct(grille, masque, case_joueur, taille);
 }

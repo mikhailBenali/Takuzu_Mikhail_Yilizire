@@ -34,13 +34,6 @@ int main() {
     int masque[4][4];
     creer_masque(masque, taille);
 
-    printf("Grille\n");
-    afficher_tab(grille, taille);
-    printf("\n");
-
-    printf("Grille masquee\n");
-    afficher_grille(grille, masque, taille);
-    printf("\n");
 
     while (1) {
         jouer(grille, masque, case_joueur, taille);
