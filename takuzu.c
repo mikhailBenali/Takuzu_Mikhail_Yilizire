@@ -182,7 +182,7 @@ int coup_valide(int grille[4][4], int masque[4][4], CASE case_joueur, int taille
 
 /*int afficher_indice(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
 
-}*/
+}*/ // todo Finir les indices
 
 
 void coup_correct(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
@@ -190,12 +190,10 @@ void coup_correct(int grille[4][4], int masque[4][4], CASE case_joueur, int tail
     if (coup_valide(grille, masque, case_joueur, taille)) { // Si le coup est valide
         if (grille[case_joueur.ligne][case_joueur.colonne] ==
             case_joueur.chiffre) { // Lorsque le joueur mets le bon chiffre
-            masque[case_joueur.ligne][case_joueur.colonne] = 1;
+            masque[case_joueur.ligne][case_joueur.colonne] = 1; // On modifie le masque pour afficher cette valeur
             printf("Votre coup est correct !\n");
-            return 1;
         } else { // Si le coup n'est pas correct
             printf("Coup valide mais incorrect\n");
-            return 0;
         }
     } else { // Si le coup n'est pas valide
         printf("Ce coup n'est pas valide\n");
@@ -204,9 +202,35 @@ void coup_correct(int grille[4][4], int masque[4][4], CASE case_joueur, int tail
 }
 
 void jouer(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
-    afficher_grille(grille, masque, taille);
-    case_joueur = saisir_case();
-    coup_correct(grille, masque, case_joueur, taille);
+
+    int rejouer = 1;
+    while (nb_vies > 0 && rejouer == 1) {
+        printf("Vous avez %d vies\n", nb_vies);
+        afficher_grille(grille, masque, taille);
+        case_joueur = saisir_case();
+        coup_correct(grille, masque, case_joueur, taille);
+
+        int nb_val_afficheees = 0;
+        for (int i = 0; i < taille; i++) {
+            for (int j = 0; j < taille; j++) {
+                if (masque[i][j] == 1) {
+                    nb_val_afficheees++;
+                }
+            }
+        }
+
+        if (nb_val_afficheees == 16) { // Si toutes les valeurs du masque sont affichées
+            rejouer = 0; // Plus besoin de rejouer
+        }
+    }
+
+    if (nb_vies > 0) { // Si le joueur à gagné
+
+
+        printf("Bravo vous avez resolu le Takuzu ! \n");
+    } else {
+        printf("Ah zut, c'est dommage d'avoir perdu si vite ☺");
+    }
 }
 
 void saisir_masque(int **masque[16]) {

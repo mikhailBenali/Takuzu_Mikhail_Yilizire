@@ -36,7 +36,7 @@ CASE saisir_case();
 
 int coup_valide(int grille[4][4], int masque[4][4], CASE case_joueur, int taille);
 
-int coup_correct(int grille[4][4], int masque[4][4], CASE case_joueur, int tailles);
+void coup_correct(int grille[4][4], int masque[4][4], CASE case_joueur, int tailles);
 
 int verifier_haut(int grille[4][4], int masque[4][4], CASE case_joueur);
 
@@ -46,7 +46,7 @@ int verifier_droite(int grille[4][4], int masque[4][4], CASE case_joueur);
 
 int verifier_gauche(int grille[4][4], int masque[4][4], CASE case_joueur);
 
-int afficher_indice (int grille[4][4], int masque[4][4], CASE case_joueur, int taille);
+int afficher_indice(int grille[4][4], int masque[4][4], CASE case_joueur, int taille);
 
 void jouer(int grille[4][4], int masque[4][4], CASE case_joueur, int taille);
 
