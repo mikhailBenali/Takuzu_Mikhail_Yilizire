@@ -185,7 +185,7 @@ int coup_valide(int grille[4][4], int masque[4][4], CASE case_joueur, int taille
 }*/
 
 
-int coup_correct(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
+void coup_correct(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
 
     if (coup_valide(grille, masque, case_joueur, taille)) { // Si le coup est valide
         if (grille[case_joueur.ligne][case_joueur.colonne] ==
@@ -207,4 +207,21 @@ void jouer(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
     afficher_grille(grille, masque, taille);
     case_joueur = saisir_case();
     coup_correct(grille, masque, case_joueur, taille);
+}
+
+void saisir_masque(int **masque[16]) {
+    int taille, i, j;
+    printf("Quelle taille voulez-vous utiliser ?\n");
+    scanf("%d", &taille);
+    masque = (int **) malloc(taille * taille * sizeof(int));
+    do {
+        for (i = 0; i < taille; i++) {
+            for (j = 0; j < taille; j++) {
+                printf("Entrer une valeur :\n");
+                scanf("%d", &masque[i][j]);
+            }
+        }
+
+    } while (masque[i][j] != 1 && masque[i][j] != 0);
+    afficher_tab(masque, taille);
 }

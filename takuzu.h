@@ -50,4 +50,6 @@ int afficher_indice (int grille[4][4], int masque[4][4], CASE case_joueur, int t
 
 void jouer(int grille[4][4], int masque[4][4], CASE case_joueur, int taille);
 
+void saisir_masque(int **masque[16]) ;
+
 #endif //TAKUZU_MIKHAIL_YILIZIRE_TAKUZU_H

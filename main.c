@@ -31,25 +31,10 @@ int main() {
                         {0, 1, 1, 0},
                         {0, 1, 0, 1}};
 
-    int masque[4][4];
+    int masque[16][16];
+    saisir_masque(masque[16][16]) ;
     creer_masque(masque, taille);
 
-
-    while (1) {
-        jouer(grille, masque, case_joueur, taille);
-
-        // S'il y a au moins une case encore non affichée dans la grille on continue
-        for (int i = 0; i < taille; i++) {
-            for (int j = 0; j < taille; j++) {
-                if (masque[i][j] == 0) {
-                    afficher_tab(masque, taille);
-                    jouer(grille, masque, case_joueur, taille);
-                }
-            }
-        }
-        break;
-    }
-
-    printf("Bravo vous avez resolu le Takuzu\n");
+    jouer(grille, masque, case_joueur, taille);
     return 0;
 }
