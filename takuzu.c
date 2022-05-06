@@ -207,8 +207,7 @@ void coup_correct(int grille[16][16], int *masque[16], CASE case_joueur, int tai
     }
 }
 
-void jouer(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
-
+void jouer(int grille[16][16], int *masque[16], CASE case_joueur, int taille) {
     int rejouer = 1;
     while (nb_vies > 0 && rejouer == 1) {
         printf("Vous avez %d vies\n", nb_vies);
@@ -217,17 +216,17 @@ void jouer(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
         coup_correct(grille, masque, case_joueur, taille);
 
 
-        int nb_val_afficheees = 0;
+        int nb_val_affichees = 0;
         for (int i = 0; i < taille; i++) {
             for (int j = 0; j < taille; j++) {
                 printf("masque : ok%d", masque[i][j] );
                 if (masque[i][j] == 1) {
-                    nb_val_afficheees++;
+                    nb_val_affichees++;
                 }
             }
         }
 
-        if (nb_val_afficheees == 16) { // Si toutes les valeurs du masque sont affichées
+        if (nb_val_affichees == 16) { // Si toutes les valeurs du masque sont affichées
             rejouer = 0; // Plus besoin de rejouer
         }
     }

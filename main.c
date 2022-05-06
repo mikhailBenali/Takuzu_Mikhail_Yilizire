@@ -41,10 +41,12 @@ int main() {
                             {0, 1, 1, 0},
                             {0, 1, 0, 1}};
 
-    int masque[16][16];
-    saisir_masque(masque[16][16]) ;
-    creer_masque(masque, taille);
-
-    jouer(grille, masque, case_joueur, taille);
-    return 0;
+        if (choix_masque == 1) {
+            masque = saisir_masque(masque, taille);
+        } else {
+            creer_masque(masque, taille);
+        }
+        jouer(grille, masque, case_joueur, taille);
+        return 0;
+    }
 }
