@@ -1,13 +1,19 @@
 #include "takuzu.h"
 
 int main() {
-    int taille;
+    int taille, i;
+    int choix_masque;
     CASE case_joueur;
-    /*
+    int **masque;
+    int **grille;
     do {
         printf("Quelle taille de grille voulez-vous ? : \n");
-        printf("1 : 4x4\t2 : 8x8\t3 : 16x16 :");
+        printf("1 : 4x4\n2 : 8x8\n3 : 16x16\n");
         scanf("%d", &taille);
+        printf("Que souhaitez-vous faire ? : \n");
+        printf("1 : Voulez-vous saisir un masque\n2 : Utiliser un masque genere automatiquement ?\n");
+        scanf("%d", &choix_masque);
+
     } while (taille < 1 || taille > 3);
 
     switch (taille) {
@@ -23,13 +29,17 @@ int main() {
         default:
             taille = 4;
             break;
-    }*/
-    taille = 4; // Pour le début on ne propose pas la taille de la grille, on impose 4
+    }
+    if (taille == 4) {
+        grille = (int **) malloc(taille * sizeof(int *)); // Initialisation du tableau 2D
+        for (i = 0; i < taille; i++) {
+            grille[i] = malloc(taille * sizeof(int));
+        }
 
-    int grille[4][4] = {{1, 0, 0, 1},
-                        {1, 0, 1, 0},
-                        {0, 1, 1, 0},
-                        {0, 1, 0, 1}};
+        int grille[16][16] = {{1, 0, 0, 1},
+                            {1, 0, 1, 0},
+                            {0, 1, 1, 0},
+                            {0, 1, 0, 1}};
 
     int masque[16][16];
     saisir_masque(masque[16][16]) ;

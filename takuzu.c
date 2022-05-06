@@ -6,11 +6,16 @@
 
 int nb_vies = 3;
 
-void creer_masque(int masque[4][4], int taille) {
-    int limite_uns; // Le nombre maximum de valeurs affichées par ligne
+void creer_masque(int *masque[16], int taille) {
+    int limite_uns, i, j; // Le nombre maximum de valeurs affichées par ligne
     // Il faut qu'il n'y ait pas trop de 1 ou de 0 dans chaque ligne
     srand(time(NULL));
-    for (int i = 0; i < taille; i++) {
+
+    masque = (int **) malloc(taille * sizeof(int *)); // Initialisation du tableau 2D
+    for (i = 0; i < taille; i++) {
+        masque[i] = malloc(taille * sizeof(int));
+    }
+    for (i = 0; i < taille; i++) {
         int nb_uns;
 
         do { // On veut au moins une valeur affichée par ligne
@@ -18,7 +23,7 @@ void creer_masque(int masque[4][4], int taille) {
             limite_uns = taille * 2 / 3; // Le nombre maximal de valeurs affichées
             nb_uns = 0; // Variable qui compte le nombre de 1 présent dans la ligne actuelle
 
-            for (int j = 0; j < taille; j++) {
+            for (j = 0; j < taille; j++) {
 
                 if (nb_uns < limite_uns &&
                     rand() % 2 == 1) { // Si la limite de 1 n'est pas atteinte et que le rand donne 1
@@ -33,7 +38,7 @@ void creer_masque(int masque[4][4], int taille) {
 }
 
 
-void afficher_tab(int tab[4][4], int taille) { // Fonction de test pour afficher un tableau
+void afficher_tab(int tab[16][16], int taille) { // Fonction de test pour afficher un tableau
     for (int i = 0; i < taille; i++) {
         for (int j = 0; j < taille; j++) {
             printf("%d ", tab[i][j]);
@@ -42,11 +47,12 @@ void afficher_tab(int tab[4][4], int taille) { // Fonction de test pour afficher
     }
 }
 
-void afficher_grille(int tab[4][4], int masque[4][4], int taille) { // Fonction qui applique le masque à la grille
+void afficher_grille(int grille[16][16], int *masque[16], int taille) { // Fonction qui applique le masque à la grille
+    printf("afficher_grille : ok\n");
     for (int i = 0; i < taille; i++) {
         for (int j = 0; j < taille; j++) {
             if (masque[i][j] == 1) {
-                printf("%d ", tab[i][j]);
+                printf("%d ", grille[i][j]);
             } else {
                 printf("- ");
             }
@@ -73,7 +79,7 @@ CASE saisir_case() {
     return case_joueur;
 }
 
-int verifier_haut(int grille[4][4], int masque[4][4], CASE case_joueur) {
+int verifier_haut(int grille[16][16], int *masque[16], CASE case_joueur) {
     if (masque[case_joueur.ligne - 1][case_joueur.colonne] == 1 &&
         masque[case_joueur.ligne - 2][case_joueur.colonne] == 1) {  // Si Les cases sont affichées
 
@@ -88,7 +94,7 @@ int verifier_haut(int grille[4][4], int masque[4][4], CASE case_joueur) {
 }
 
 
-int verifier_bas(int grille[4][4], int masque[4][4], CASE case_joueur) {
+int verifier_bas(int grille[16][16], int *masque[16], CASE case_joueur) {
     if (masque[case_joueur.ligne + 1][case_joueur.colonne] == 1 &&
         masque[case_joueur.ligne + 2][case_joueur.colonne] == 1) {
 
@@ -100,7 +106,7 @@ int verifier_bas(int grille[4][4], int masque[4][4], CASE case_joueur) {
     return 1;
 }
 
-int verifier_droite(int grille[4][4], int masque[4][4], CASE case_joueur) {
+int verifier_droite(int grille[16][16], int *masque[16], CASE case_joueur) {
     if (masque[case_joueur.ligne][case_joueur.colonne + 1] == 1 &&
         masque[case_joueur.ligne][case_joueur.colonne + 2] == 1) {
 
@@ -113,7 +119,7 @@ int verifier_droite(int grille[4][4], int masque[4][4], CASE case_joueur) {
     return 1;
 }
 
-int verifier_gauche(int grille[4][4], int masque[4][4], CASE case_joueur) {
+int verifier_gauche(int grille[16][16], int *masque[16], CASE case_joueur) {
 
     if (masque[case_joueur.ligne][case_joueur.colonne - 1] == 1 &&
         masque[case_joueur.ligne][case_joueur.colonne - 2] == 1) {
@@ -128,7 +134,7 @@ int verifier_gauche(int grille[4][4], int masque[4][4], CASE case_joueur) {
 
 }
 
-int coup_valide(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
+int coup_valide(int grille[16][16], int *masque[16], CASE case_joueur, int taille) {
     if (masque[case_joueur.ligne][case_joueur.colonne] == 1)
         // Si la valeur est déjà affichée
     {
@@ -185,7 +191,7 @@ int coup_valide(int grille[4][4], int masque[4][4], CASE case_joueur, int taille
 }*/ // todo Finir les indices
 
 
-void coup_correct(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
+void coup_correct(int grille[16][16], int *masque[16], CASE case_joueur, int taille) {
 
     if (coup_valide(grille, masque, case_joueur, taille)) { // Si le coup est valide
         if (grille[case_joueur.ligne][case_joueur.colonne] ==
@@ -210,9 +216,11 @@ void jouer(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
         case_joueur = saisir_case();
         coup_correct(grille, masque, case_joueur, taille);
 
+
         int nb_val_afficheees = 0;
         for (int i = 0; i < taille; i++) {
             for (int j = 0; j < taille; j++) {
+                printf("masque : ok%d", masque[i][j] );
                 if (masque[i][j] == 1) {
                     nb_val_afficheees++;
                 }
@@ -233,19 +241,19 @@ void jouer(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
     }
 }
 
-void saisir_masque(int **masque[16]) {
-    int taille, i, j;
-    printf("Quelle taille voulez-vous utiliser ?\n");
-    scanf("%d", &taille);
-    masque = (int **) malloc(taille * taille * sizeof(int));
-    do {
-        for (i = 0; i < taille; i++) {
-            for (j = 0; j < taille; j++) {
-                printf("Entrer une valeur :\n");
+int **saisir_masque(int *masque[16], int taille) {
+    int i, j;
+    masque = (int **) malloc(taille * sizeof(int *)); // Initialisation du tableau 2D
+    for (i = 0; i < taille; i++) {
+        masque[i] = malloc(taille * sizeof(int));
+    }
+    for (i = 0; i < taille; i++) {
+        for (j = 0; j < taille; j++) {
+            do {
+                printf("Entrez une valeur :\n");
                 scanf("%d", &masque[i][j]);
-            }
+            } while (masque[i][j] != 1 && masque[i][j] != 0);
         }
-
-    } while (masque[i][j] != 1 && masque[i][j] != 0);
-    afficher_tab(masque, taille);
+    }
+    return masque;
 }
