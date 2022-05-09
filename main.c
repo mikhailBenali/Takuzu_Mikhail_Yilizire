@@ -5,7 +5,7 @@ int main() {
     int i;
     char choix_masque;
     CASE case_joueur;
-    int **masque[16];
+    int **masque;
     int **grille;
     do {
         printf("Quelle taille de grille voulez-vous utiliser ?\n");
