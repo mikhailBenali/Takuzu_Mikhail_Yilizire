@@ -24,34 +24,34 @@ typedef struct {
     int chiffre;
 } CASE;
 
-void creer_masque(int *masque[4], int taille);
+void creer_masque(int *masque[16], int taille);
 
-void afficher_tab(int tab[16][16], int taille);
+void afficher_tab(int *tab[16], int taille);
 
-void afficher_grille(int grille[16][16], int *masque[16], int taille);
+void afficher_grille(int *grille[16], int *masque[16], int taille);
 
 int valeur_choisie(int val);
 
 CASE saisir_case();
 
-int coup_valide(int grille[16][16], int *masque[16], CASE case_joueur, int taille);
+int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille);
 
-void coup_correct(int grille[16][16], int *masque[16], CASE case_joueur, int tailles);
+void coup_correct(int *grille[16], int *masque[16], CASE case_joueur, int tailles);
 
-int verifier_haut(int grille[16][16], int *masque[16], CASE case_joueur);
+int verifier_haut(int *grille[16], int *masque[16], CASE case_joueur);
 
-int verifier_bas(int grille[16][16], int *masque[16], CASE case_joueur);
+int verifier_bas(int *grille[16], int *masque[16], CASE case_joueur);
 
-int verifier_droite(int grille[16][16], int *masque[16], CASE case_joueur);
+int verifier_droite(int *grille[16], int *masque[16], CASE case_joueur);
 
-int verifier_droite(int grille[16][16], int *masque[16], CASE case_joueur);
+int verifier_droite(int *grille[16], int *masque[16], CASE case_joueur);
 
-int verifier_gauche(int grille[16][16], int *masque[16], CASE case_joueur);
+int verifier_gauche(int *grille[16], int *masque[16], CASE case_joueur);
 
-int afficher_indice(int grille[16][16], int *masque[16], CASE case_joueur, int taille);
+int afficher_indice(int *grille[16], int *masque[16], CASE case_joueur, int taille);
 
-void jouer(int grille[16][16], int *masque[16], CASE case_joueur, int taille);
+void jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille);
 
-int **saisir_masque(int *masque[16], int taille);
+void saisir_masque(int *masque[16], int taille);
 
 #endif //TAKUZU_MIKHAIL_YILIZIRE_TAKUZU_H
