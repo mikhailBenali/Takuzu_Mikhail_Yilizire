@@ -62,7 +62,7 @@ int main() {
           0, 1, 0, 1*/
         afficher_tab(grille, taille);
 
-        if (choix_masque == 1) {
+        if (choix_masque == '1') {
             saisir_masque(masque, taille);
             afficher_grille(grille, masque, taille);
         } else {

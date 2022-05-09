@@ -240,18 +240,25 @@ void jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
 }
 
 void saisir_masque(int *masque[16], int taille) {
+    printf("saisir_masque : ok\n");
     int i, j;
     masque = (int **) malloc(taille * sizeof(int *)); // Initialisation du tableau 2D
     for (i = 0; i < taille; i++) {
         masque[i] = malloc(taille * sizeof(int));
     }
-    printf("size= %d\n", sizeof(masque)) ;
+    printf("size= %d\n", sizeof(masque));
     for (i = 0; i < taille; i++) {
         for (j = 0; j < taille; j++) {
             do {
-                printf("Entrez une valeur %d %d:\n", i , j);
+                printf("Entrez une valeur %d %d:\n", i, j);
                 scanf("%d", &masque[i][j]);
             } while (masque[i][j] != 1 && masque[i][j] != 0);
         }
+    }
+    for (i = 0; i < taille; i++) {
+        for (j = 0; j < taille; j++) {
+            printf("%d ", masque[i][j]);
+        }
+        printf("\n");
     }
 }
