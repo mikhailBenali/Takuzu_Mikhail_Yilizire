@@ -46,11 +46,10 @@ void afficher_tab(int *tab[16], int taille) { // Fonction de test pour afficher 
     }
 }
 
-void afficher_grille(int *grille[16], int *masque[16], int taille) { // Fonction qui applique le masque à la grille
+void afficher_grille(int taille, int grille[taille][taille], int masque[taille][taille]) { // Fonction qui applique le masque à la grille
     for (int i = 0; i < taille; i++) {
         for (int j = 0; j < taille; j++) {
             if (masque[i][j] == 1) {
-                printf("afficher_grille : ok\n");
                 printf("%d ", grille[i][j]);
             } else {
                 printf(" - ");
@@ -250,7 +249,7 @@ void saisir_masque(int *masque[16], int taille) {
     for (i = 0; i < taille; i++) {
         for (j = 0; j < taille; j++) {
             do {
-                printf("Entrez une valeur %d %d:\n", i, j);
+                printf("Entrez une valeur ligne %d et colonne %d:\n", i+1, j+1);
                 scanf("%d", &masque[i][j]);
             } while (masque[i][j] != 1 && masque[i][j] != 0);
         }

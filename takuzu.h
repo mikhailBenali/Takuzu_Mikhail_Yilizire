@@ -28,7 +28,7 @@ void creer_masque(int *masque[16], int taille);
 
 void afficher_tab(int *tab[16], int taille);
 
-void afficher_grille(int *grille[16], int *masque[16], int taille);
+void afficher_grille(int taille, int grille[taille][taille], int masque[taille][taille]);
 
 int valeur_choisie(int val);
 

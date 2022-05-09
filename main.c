@@ -5,7 +5,7 @@ int main() {
     int i;
     char choix_masque;
     CASE case_joueur;
-    int *masque[16];
+    int **masque[16];
     int **grille;
     do {
         printf("Quelle taille de grille voulez-vous utiliser ?\n");
@@ -64,10 +64,11 @@ int main() {
 
         if (choix_masque == '1') {
             saisir_masque(masque, taille);
-            afficher_grille(grille, masque, taille);
+            afficher_grille(taille, grille, masque);
+            printf("fonctionne\n");
         } else {
             creer_masque(masque, taille);
-            afficher_grille(grille, masque, taille);
+            afficher_grille(taille, grille, masque);
         }
         jouer(grille, masque, case_joueur, taille);
         return 0;
