@@ -1,24 +1,24 @@
 #include "takuzu.h"
 
 int main() {
-    char taille; // pour éviter les bugs quand l'utilisateur saisit un caractère autre qu'un chiffre
+    int taille;
     int i;
-    char choix_masque;
+    int choix_masque;
     CASE case_joueur;
     int **masque;
     int **grille;
+
     do {
         printf("Quelle taille de grille voulez-vous utiliser ?\n");
         printf("1 : 4x4\n2 : 8x8\n3 : 16x16\n");
-        scanf(" %c", &taille); // un espace pour éviter que la boucle s'exécute deux fois
-    } while (taille != '1' && taille != '2' && taille != '3');
+        scanf(" %d", &taille); // un espace pour éviter que la boucle s'exécute deux fois
+    } while (taille != 1 && taille != 2 && taille != 3);
     do {
         printf("Que souhaitez-vous faire ? : \n");
         printf("1 : Voulez-vous saisir un masque\n2 : Utiliser un masque genere automatiquement\n");
-        scanf(" %c", &choix_masque); // un espace pour éviter que la boucle s'exécute deux fois
-    } while (choix_masque != '1' && choix_masque != '2');
+        scanf(" %d", &choix_masque); // un espace pour éviter que la boucle s'exécute deux fois
+    } while (choix_masque != 1 && choix_masque != 2);
 
-    taille = (int) taille;
     switch (taille) {
         case 1:
             taille = 4;
@@ -33,12 +33,12 @@ int main() {
             taille = 4;
             break;
     }
-    if (taille == 4) {
+    if (taille == 4) { // Si la taille est égale à 4 on utilise une grille préfaite
         grille = (int **) malloc(taille * sizeof(int *)); // Initialisation du tableau 2D
         for (i = 0; i < taille; i++) {
             grille[i] = malloc(taille * sizeof(int));
         }
-        printf("grille complete :\n");
+
         grille[0][0] = 1;
         grille[0][1] = 0;
         grille[0][2] = 0;
@@ -60,17 +60,17 @@ int main() {
           1, 0, 1, 0
           0, 1, 1, 0
           0, 1, 0, 1*/
-        afficher_tab(grille, taille);
 
-        if (choix_masque == '1') {
-            saisir_masque(masque, taille);
-            afficher_grille(taille, grille, masque);
-            printf("fonctionne\n");
+        if (choix_masque == 1) {
+            masque = saisir_masque(taille);
+            afficher_tab(masque, taille);
         } else {
-            creer_masque(masque, taille);
-            afficher_grille(taille, grille, masque);
+            do {
+                masque = creer_masque(taille);
+            } while (masque_plein(masque, taille) == 1); // Tant que le masque saisi est plein
         }
         jouer(grille, masque, case_joueur, taille);
         return 0;
     }
+
 }

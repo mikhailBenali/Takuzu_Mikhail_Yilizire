@@ -24,11 +24,11 @@ typedef struct {
     int chiffre;
 } CASE;
 
-void creer_masque(int *masque[16], int taille);
+int **creer_masque(int taille);
 
 void afficher_tab(int *tab[16], int taille);
 
-void afficher_grille(int taille, int grille[taille][taille], int masque[taille][taille]);
+void afficher_grille(int *grille[16], int *masque[16], int taille);
 
 int valeur_choisie(int val);
 
@@ -52,6 +52,8 @@ int afficher_indice(int *grille[16], int *masque[16], CASE case_joueur, int tail
 
 void jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille);
 
-void saisir_masque(int *masque[16], int taille);
+int **saisir_masque(int taille);
+
+int masque_plein(int *masque[16], int taille);
 
 #endif //TAKUZU_MIKHAIL_YILIZIRE_TAKUZU_H
