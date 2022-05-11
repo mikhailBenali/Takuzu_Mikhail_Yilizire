@@ -2,9 +2,54 @@
 // Created by Mikhaïl on 4/6/2022.
 //
 
+// todo saisie sécurisée de ligne et de colonne
 #include "takuzu.h"
 
 int nb_vies = 3;
+int nb_coups_incorrects = 0;
+
+int **creer_matrice(int taille) {
+    int **matrice = (int **) malloc(taille * sizeof(int *));
+
+    for (int i = 0; i < taille; i++) {
+        matrice[i] = (int *) malloc(taille * sizeof(int));
+    }
+    return matrice;
+}
+
+void remplir_matrice4(int **matrice) {
+    int solution[4][4] = {{1, 0, 0, 1},
+                          {1, 0, 1, 0},
+                          {1, 0, 1, 0},
+                          {1, 0, 1, 0}};
+    /*    1, 0, 0, 1
+          1, 0, 1, 0
+          1, 0, 1, 0
+          1, 0, 1, 0*/
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            matrice[i][j] = solution[i][j];
+        }
+    }
+}
+
+void remplir_matrice8(int **matrice) {
+    int solution[8][8] = {{1, 0, 1, 1, 0, 1, 0, 0},
+                          {1, 0, 1, 0, 1, 0, 0, 1},
+                          {0, 1, 0, 1, 1, 0, 1, 0},
+                          {0, 1, 0, 1, 0, 1, 1, 0},
+                          {1, 0, 1, 0, 0, 1, 0, 1},
+                          {0, 1, 0, 0, 1, 0, 1, 1},
+                          {0, 0, 1, 1, 0, 1, 1, 0},
+                          {1, 1, 0, 0, 1, 0, 0, 1}};
+
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            matrice[i][j] = solution[i][j];
+        }
+    }
+}
 
 int **creer_masque(int taille) {
     int limite_uns, i, j; // Le nombre maximum de valeurs affichées par ligne
@@ -63,7 +108,7 @@ void afficher_grille(int *grille[16], int *masque[16], int taille) { // Fonction
     }
 }
 
-CASE saisir_case() {
+CASE saisir_case(int taille) {
     CASE case_joueur;
     do {
         printf("Quelle ligne ?\n");
@@ -75,8 +120,8 @@ CASE saisir_case() {
         printf("Quel chiffre ?\n");
         scanf("%d", &case_joueur.chiffre);
 
-    } while (case_joueur.colonne < 0 || case_joueur.colonne > 3
-             || case_joueur.ligne < 0 || case_joueur.ligne > 3
+    } while (case_joueur.colonne < 0 || case_joueur.colonne > taille - 1
+             || case_joueur.ligne < 0 || case_joueur.ligne > taille - 1
              || (case_joueur.chiffre != 0 && case_joueur.chiffre != 1));
     return case_joueur;
 }
@@ -140,8 +185,8 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
     if (masque[case_joueur.ligne][case_joueur.colonne] == 1)
         // Si la valeur est déjà affichée
     {
-        printf("La valeur que vous avez saisie n'est pas valide\n");
-        saisir_case();
+        printf("La valeur que vous avez saisie est deja affichee\n");
+        case_joueur = saisir_case(taille);
     }
 
     int nb_verif = 0;
@@ -155,6 +200,8 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
         if (verifier_haut(grille, masque, case_joueur)) {
             verif_ok++;
         } //en cas de coup invalide : donner un indice à l'utilisateur
+        else
+            printf("Les deux cases du haut sont deja des %d\n", case_joueur.chiffre);
     }
 
     // Vérification du bas
@@ -162,7 +209,8 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
         nb_verif++;
         if (verifier_bas(grille, masque, case_joueur)) {
             verif_ok++;
-        }
+        } else
+            printf("Les deux cases du bas sont deja des %d\n", case_joueur.chiffre);
     }
 
     // Vérification de la gauche
@@ -170,13 +218,17 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
         nb_verif++;
         if (verifier_gauche(grille, masque, case_joueur)) {
             verif_ok++;
-        }
+        } else
+            printf("Les deux cases de gauche sont deja des %d\n", case_joueur.chiffre);
     }
     // Vérification de la droite
     if (case_joueur.colonne < taille - 2) {
         nb_verif++;
         if (verifier_droite(grille, masque, case_joueur)) {
             verif_ok++;
+
+        } else {
+            printf("Les deux cases de droite sont deja des %d\n", case_joueur.chiffre);
         }
     }
 
@@ -188,19 +240,36 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
     }
 }
 
-/*int afficher_indice(int grille[4][4], int masque[4][4], CASE case_joueur, int taille) {
+int afficher_indice(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
+    char reponse_indice;
+    printf("Voulez-vous un indice ? o\\n : \n");
+    scanf(" %c", &reponse_indice);
 
-}*/ // todo Finir les indices
+    if (reponse_indice == 'o') {
 
+        // Les deux premiers indices sont déjà implémentés dans coup_valide
+        if (case_joueur.ligne > 0 && case_joueur.ligne < taille) { // Si la ligne n'est pas au bord de la grille
+            if (grille[case_joueur.ligne - 1][case_joueur.colonne] == grille[case_joueur.ligne + 1][case_joueur.colonne]) { // On compare les lignes du dessus et du dessous
+                printf("Il y a la meme valeur au dessus et en dessous\n");
+            }
+        }
+        if (case_joueur.colonne > 0 && case_joueur.colonne < taille) {
+            if (grille[case_joueur.ligne][case_joueur.colonne - 1] == grille[case_joueur.ligne][case_joueur.colonne + 1]) {
+                printf("Il y a la meme valeur a droite et a gauche\n");
+            }
+        }
+    }
+}
 
 void coup_correct(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     if (coup_valide(grille, masque, case_joueur, taille)) { // Si le coup est valide
-        if (grille[case_joueur.ligne][case_joueur.colonne] ==
-            case_joueur.chiffre) { // Lorsque le joueur mets le bon chiffre
+        if (grille[case_joueur.ligne][case_joueur.colonne] == case_joueur.chiffre) { // Lorsque le joueur mets le bon chiffre
             masque[case_joueur.ligne][case_joueur.colonne] = 1; // On modifie le masque pour afficher cette valeur
             printf("Votre coup est correct !\n");
-        } else { // Si le coup n'est pas correct
+        }
+        if (grille[case_joueur.ligne][case_joueur.colonne] != case_joueur.chiffre) { // Si le coup n'est pas correct
             printf("Coup valide mais incorrect !\n");
+            nb_coups_incorrects++;
         }
     } else { // Si le coup n'est pas valide
         printf("Ce coup n'est pas valide\n");
@@ -208,44 +277,64 @@ void coup_correct(int *grille[16], int *masque[16], CASE case_joueur, int taille
     }
 }
 
-void jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
-    int rejouer = 1;
-    while (nb_vies > 0 && rejouer == 1) {
+int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
+    char choix_rejouer;
+    while (nb_vies > 0 && tableau_rempli(grille, masque, taille) == 0) {
         printf("Vous avez %d vies\n", nb_vies);
         afficher_grille(grille, masque, taille);
-        case_joueur = saisir_case();
+        case_joueur = saisir_case(taille);
         coup_correct(grille, masque, case_joueur, taille);
-
-        if (masque_plein(masque, taille)) {
-            rejouer = 0;
+        if (nb_coups_incorrects == 3) {
+            nb_coups_incorrects = 0;
+            afficher_indice(grille, masque, case_joueur, taille);
         }
     }
 
     if (nb_vies > 0) { // Si le joueur à gagné
         printf("Bravo, vous avez resolu le Takuzu !\n");
-    } else {
-        printf("Vous avez epuise vos 3 vies\n");
     }
+    while (nb_vies == 0) {
+
+        do {
+            printf("Vous avez epuise vos 3 vies\n");
+            printf("Souhaitez-vous rejouer ? :\no : oui\nn : non\n");
+            fflush(stdin);
+            scanf(" %c", choix_rejouer);
+        } while (choix_rejouer != 'o' && choix_rejouer != 'n'); // todo corriger la saisie sécurisée
+    }
+    if (choix_rejouer == 'o')
+        return 1;
+    return 0;
 }
 
 int **saisir_masque(int taille) {
     int i, j, **masque;
+    int nb_val_affichees;
     masque = (int **) malloc(taille * sizeof(int *)); // Initialisation du tableau 2D
     for (i = 0; i < taille; i++) {
         masque[i] = malloc(taille * sizeof(int));
     }
-    for (i = 0; i < taille; i++) {
-        for (j = 0; j < taille; j++) {
-            do {
-                printf("Entrez une valeur pour la ligne %d et colonne %d:\n", i + 1, j + 1);
-                scanf("%d", &masque[i][j]);
-            } while (masque[i][j] != 1 && masque[i][j] != 0);
+    do {
+        nb_val_affichees = 0;
+        for (i = 0; i < taille; i++) {
+            for (j = 0; j < taille; j++) {
+                do {
+                    printf("Entrez une valeur pour la ligne %d et colonne %d:\n", i + 1, j + 1);
+                    scanf("%d", &masque[i][j]);
+                    if (masque[i][j] == 1) {
+                        nb_val_affichees++;
+                    }
+                } while (masque[i][j] != 1 && masque[i][j] != 0);
+            }
         }
-    }
+        if (nb_val_affichees == 16) {
+            printf("Votre masque est rempli uniquement de 1\nRessaisissez votre masque\n");
+        }
+    } while (nb_val_affichees == 16);
     return masque;
-}
+} // todo remettre les crochets dans les if avec une seul condition
 
-int masque_plein(int *masque[16], int taille) {
+int tableau_rempli(int *grille[16], int *masque[16], int taille) {
     int nb_val_affichees = 0;
     for (int i = 0; i < taille; i++) {
         for (int j = 0; j < taille; j++) {
@@ -254,9 +343,9 @@ int masque_plein(int *masque[16], int taille) {
             }
         }
     }
-    printf("Nb de val affichees : %d", nb_val_affichees);
-    if (nb_val_affichees == 16) { // Si toutes les valeurs du masque sont affichées
-        return 1; // Le masque est plein
+
+    if (nb_val_affichees == taille * taille) {
+        return 1;
     } else {
         return 0;
     }

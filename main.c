@@ -1,76 +1,61 @@
 #include "takuzu.h"
 
 int main() {
-    int taille;
-    int i;
-    int choix_masque;
+    char taille_char, choix_masque_char; // déclaration de la taille et de choix_masque en int
+    int i, taille_int, choix_masque_int, rejouer=1;
+
     CASE case_joueur;
     int **masque;
     int **grille;
+    while (rejouer==1) {
+        do {
+            printf("Quelle taille de grille voulez-vous utiliser ?\n");
+            printf("1 : 4x4\n2 : 8x8\n3 : 16x16\n");
+            scanf(" %c", &taille_char); // un espace pour éviter que la boucle s'exécute deux fois
+        } while (taille_char != '1' && taille_char != '2' && taille_char != '3');
+        do {
+            printf("Que souhaitez-vous faire ? : \n");
+            printf("1 : Voulez-vous saisir un masque\n2 : Utiliser un masque genere automatiquement\n");
+            scanf(" %c", &choix_masque_char); // un espace pour éviter que la boucle s'exécute deux fois
+        } while (choix_masque_char != '1' && choix_masque_char != '2');
 
-    do {
-        printf("Quelle taille de grille voulez-vous utiliser ?\n");
-        printf("1 : 4x4\n2 : 8x8\n3 : 16x16\n");
-        scanf(" %d", &taille); // un espace pour éviter que la boucle s'exécute deux fois
-    } while (taille != 1 && taille != 2 && taille != 3);
-    do {
-        printf("Que souhaitez-vous faire ? : \n");
-        printf("1 : Voulez-vous saisir un masque\n2 : Utiliser un masque genere automatiquement\n");
-        scanf(" %d", &choix_masque); // un espace pour éviter que la boucle s'exécute deux fois
-    } while (choix_masque != 1 && choix_masque != 2);
+        if (taille_char == '1')
+            taille_int = 4;
+        else if (taille_char == '2')
+            taille_int = 8;
+        else if (taille_char == '3')
+            taille_int = 16;
 
-    switch (taille) {
-        case 1:
-            taille = 4;
-            break;
-        case 2:
-            taille = 8;
-            break;
-        case 3:
-            taille = 16;
-            break;
-        default:
-            taille = 4;
-            break;
-    }
-    if (taille == 4) { // Si la taille est égale à 4 on utilise une grille préfaite
-        grille = (int **) malloc(taille * sizeof(int *)); // Initialisation du tableau 2D
-        for (i = 0; i < taille; i++) {
-            grille[i] = malloc(taille * sizeof(int));
+        if (choix_masque_char == '1')
+            choix_masque_int = 1;
+        else if (choix_masque_char == '2')
+            choix_masque_int = 2;
+
+        grille = creer_matrice(taille_int);
+        switch (taille_int) {
+            case 4:
+                remplir_matrice4(grille);
+                break;
+            case 8:
+                remplir_matrice8(grille);
+                break;
+            default:
+                remplir_matrice4(grille);
         }
 
-        grille[0][0] = 1;
-        grille[0][1] = 0;
-        grille[0][2] = 0;
-        grille[0][3] = 1;
-        grille[1][0] = 1;
-        grille[1][1] = 0;
-        grille[1][2] = 1;
-        grille[1][3] = 0;
-        grille[2][0] = 0;
-        grille[2][1] = 1;
-        grille[2][2] = 1;
-        grille[2][3] = 0;
-        grille[3][0] = 0;
-        grille[3][1] = 1;
-        grille[3][2] = 0;
-        grille[3][3] = 1;
 
         /*1, 0, 0, 1
           1, 0, 1, 0
           0, 1, 1, 0
           0, 1, 0, 1*/
 
-        if (choix_masque == 1) {
-            masque = saisir_masque(taille);
-            afficher_tab(masque, taille);
+        if (choix_masque_int == 1) {
+            masque = saisir_masque(taille_int);
+            afficher_tab(masque, taille_int);
         } else {
-            do {
-                masque = creer_masque(taille);
-            } while (masque_plein(masque, taille) == 1); // Tant que le masque saisi est plein
+            masque = creer_masque(taille_int);
         }
-        jouer(grille, masque, case_joueur, taille);
-        return 0;
+        rejouer = jouer(grille, masque, case_joueur, taille_int);
     }
-
+    return 0;
 }
