@@ -60,6 +60,6 @@ int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille);
 
 int **saisir_masque(int taille);
 
-int tableau_rempli();
+int tableau_rempli(int *masque[16], int taille);
 
 #endif //TAKUZU_MIKHAIL_YILIZIRE_TAKUZU_H

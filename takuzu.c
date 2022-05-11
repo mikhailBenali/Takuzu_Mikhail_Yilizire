@@ -112,12 +112,17 @@ CASE saisir_case(int taille) {
     CASE case_joueur;
     do {
         printf("Quelle ligne ?\n");
+        fflush(stdin);
         scanf("%d", &case_joueur.ligne);
         case_joueur.ligne--;
+
         printf("Quelle colonne ?\n");
+        fflush(stdin);
         scanf("%d", &case_joueur.colonne);
         case_joueur.colonne--;
+
         printf("Quel chiffre ?\n");
+        fflush(stdin);
         scanf("%d", &case_joueur.chiffre);
 
     } while (case_joueur.colonne < 0 || case_joueur.colonne > taille - 1
@@ -332,9 +337,9 @@ int **saisir_masque(int taille) {
         }
     } while (nb_val_affichees == 16);
     return masque;
-} // todo remettre les crochets dans les if avec une seul condition
+}
 
-int tableau_rempli(int *grille[16], int *masque[16], int taille) {
+int tableau_rempli(int *masque[16], int taille) {
     int nb_val_affichees = 0;
     for (int i = 0; i < taille; i++) {
         for (int j = 0; j < taille; j++) {
