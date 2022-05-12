@@ -5,7 +5,7 @@
 // todo saisie sécurisée de ligne et de colonne
 #include "takuzu.h"
 
-int nb_vies = 3;
+int nb_vies = 1;
 int nb_coups_incorrects = 0;
 
 int **creer_matrice(int taille) {
@@ -284,8 +284,10 @@ void coup_correct(int *grille[16], int *masque[16], CASE case_joueur, int taille
 
 int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     char choix_rejouer;
+    nb_vies = 1 ;
     while (nb_vies > 0 && tableau_rempli(masque, taille) == 0) {
-        printf("Vous avez %d vies\n", nb_vies);
+        if (nb_vies==1){ printf("Vous avez %d vie\n", nb_vies) ;}
+        else { printf("Vous avez %d vies\n", nb_vies); }
         afficher_grille(grille, masque, taille); // afficher la grille à compléter à chaque fois que l'utilisateur saisit une valeur
         case_joueur = saisir_case(taille);
         coup_correct(grille, masque, case_joueur, taille);
@@ -294,21 +296,16 @@ int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
             afficher_indice(grille, masque, case_joueur, taille);
         }
     }
-
     if (nb_vies > 0) { // Si le joueur à gagné
         printf("Bravo, vous avez resolu le Takuzu !\n");
     }
-    while (nb_vies == 0) {
-
-        do {
-            printf("Vous avez epuise vos 3 vies\n");
-            printf("Souhaitez-vous rejouer ? :\no : oui\nn : non\n");
-            fflush(stdin);
-            scanf(" %c", choix_rejouer);
-        } while (choix_rejouer != 'o' && choix_rejouer != 'n'); // todo corriger la saisie sécurisée
-    }
-    if (choix_rejouer == 'o')
-        return 1;
+    else
+    do {
+        printf("Vous avez epuise vos 3 vies\n");
+        printf("Souhaitez-vous rejouer ? :\no : oui\nn : non\n");
+        scanf(" %c", &choix_rejouer);
+    } while (choix_rejouer != 'o' && choix_rejouer != 'n'); // todo corriger la saisie sécurisée
+    if (choix_rejouer == 'o') { return 1 ;}
     return 0;
 }
 
@@ -348,7 +345,6 @@ int tableau_rempli(int *masque[16], int taille) {
             }
         }
     }
-
     if (nb_val_affichees == taille * taille) {
         return 1;
     } else {
