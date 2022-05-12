@@ -5,7 +5,7 @@
 // todo saisie sécurisée de ligne et de colonne
 #include "takuzu.h"
 
-int nb_vies = 1;
+int nb_vies = 3;
 int nb_coups_incorrects = 0;
 
 int **creer_matrice(int taille) {
@@ -284,7 +284,7 @@ void coup_correct(int *grille[16], int *masque[16], CASE case_joueur, int taille
 
 int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     char choix_rejouer;
-    nb_vies = 1 ;
+    nb_vies = 3 ;
     while (nb_vies > 0 && tableau_rempli(masque, taille) == 0) {
         if (nb_vies==1){ printf("Vous avez %d vie\n", nb_vies) ;}
         else { printf("Vous avez %d vies\n", nb_vies); }
