@@ -60,4 +60,6 @@ int **saisir_masque(int taille);
 
 int tableau_rempli(int *masque[16], int taille);
 
+int rejouer();
+
 #endif //TAKUZU_MIKHAIL_YILIZIRE_TAKUZU_H

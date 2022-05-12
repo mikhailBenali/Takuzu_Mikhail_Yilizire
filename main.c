@@ -2,20 +2,22 @@
 
 int main() {
     char taille_char, choix_masque_char; // déclaration de la taille et de choix_masque en int
-    int i, taille_int, choix_masque_int, rejouer=1;
+    int i, taille_int, choix_masque_int, rejouer = 1;
 
     CASE case_joueur;
     int **masque;
     int **grille;
-    while (rejouer==1) {
+    while (rejouer == 1) {
         do {
             printf("Quelle taille de grille voulez-vous utiliser ?\n");
             printf("1 : 4x4\n2 : 8x8\n3 : 16x16\n");
+            fflush(stdin);
             scanf(" %c", &taille_char); // un espace pour éviter que la boucle s'exécute deux fois
         } while (taille_char != '1' && taille_char != '2' && taille_char != '3');
         do {
             printf("Que souhaitez-vous faire ? : \n");
             printf("1 : Voulez-vous saisir un masque\n2 : Utiliser un masque genere automatiquement\n");
+            fflush(stdin);
             scanf(" %c", &choix_masque_char); // un espace pour éviter que la boucle s'exécute deux fois
         } while (choix_masque_char != '1' && choix_masque_char != '2');
 
