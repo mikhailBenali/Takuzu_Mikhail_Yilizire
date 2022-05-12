@@ -46,11 +46,9 @@ void coup_correct(int *grille[16], int *masque[16], CASE case_joueur, int taille
 
 int verifier_haut(int *grille[16], int *masque[16], CASE case_joueur);
 
-int verifier_bas(int *grille[16], int *masque[16], CASE case_joueur);
+int verifier_bas(int *grille[16], int *masque[16], CASE case_joueur, int taille);
 
-int verifier_droite(int *grille[16], int *masque[16], CASE case_joueur);
-
-int verifier_droite(int *grille[16], int *masque[16], CASE case_joueur);
+int verifier_droite(int *grille[16], int *masque[16], CASE case_joueur, int taille);
 
 int verifier_gauche(int *grille[16], int *masque[16], CASE case_joueur);
 

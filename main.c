@@ -43,12 +43,6 @@ int main() {
                 remplir_matrice4(grille);
         }
 
-
-        /*1, 0, 0, 1
-          1, 0, 1, 0
-          0, 1, 1, 0
-          0, 1, 0, 1*/
-
         if (choix_masque_int == 1) {
             masque = saisir_masque(taille_int);
             afficher_tab(masque, taille_int);

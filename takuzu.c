@@ -20,12 +20,13 @@ int **creer_matrice(int taille) {
 void remplir_matrice4(int **matrice) {
     int solution[4][4] = {{1, 0, 0, 1},
                           {1, 0, 1, 0},
-                          {1, 0, 1, 0},
-                          {1, 0, 1, 0}};
-    /*    1, 0, 0, 1
-          1, 0, 1, 0
-          1, 0, 1, 0
-          1, 0, 1, 0*/
+                          {0, 1, 1, 0},
+                          {0, 1, 0, 1}};
+
+    /*1, 0, 0, 1
+      1, 0, 1, 0
+      0, 1, 1, 0
+      0, 1, 0, 1*/
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
@@ -101,7 +102,7 @@ void afficher_grille(int *grille[16], int *masque[16], int taille) { // Fonction
             if (masque[i][j] == 1) {
                 printf(" %d ", grille[i][j]);
             } else {
-                printf(" - ");
+                printf(" * ");
             }
         }
         printf("\n");
@@ -132,57 +133,55 @@ CASE saisir_case(int taille) {
 }
 
 int verifier_haut(int *grille[16], int *masque[16], CASE case_joueur) {
-    if (masque[case_joueur.ligne - 1][case_joueur.colonne] == 1 &&
-        masque[case_joueur.ligne - 2][case_joueur.colonne] == 1) {  // Si Les cases sont affichées
-
-
-        if (grille[case_joueur.ligne - 1][case_joueur.colonne] == case_joueur.chiffre &&
-            grille[case_joueur.ligne - 2][case_joueur.colonne] ==
-            case_joueur.chiffre) {  // Et sont les mêmes que le chiffre utilisateur
-            return 0; // Le test est invalide
-        }
+    //les règles du jeu ne sont pas respectées
+    if (case_joueur.ligne > 1
+        && masque[case_joueur.ligne - 1][case_joueur.colonne] == 1
+        && masque[case_joueur.ligne - 2][case_joueur.colonne] == 1
+        && grille[case_joueur.ligne - 1][case_joueur.colonne] == case_joueur.chiffre
+        && grille[case_joueur.ligne - 2][case_joueur.colonne] == case_joueur.chiffre) {
+        return 0;
     }
+    //les règles du jeu sont respectées
     return 1;
 }
 
-
-int verifier_bas(int *grille[16], int *masque[16], CASE case_joueur) {
-    if (masque[case_joueur.ligne + 1][case_joueur.colonne] == 1 &&
-        masque[case_joueur.ligne + 2][case_joueur.colonne] == 1) {
-
-        if (grille[case_joueur.ligne + 1][case_joueur.colonne] == case_joueur.chiffre &&
-            grille[case_joueur.ligne + 2][case_joueur.colonne] == case_joueur.chiffre) {
-            return 0;
-        }
+int verifier_bas(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
+    //les règles du jeu ne sont pas respectées
+    if (case_joueur.ligne < taille - 2
+        && masque[case_joueur.ligne + 1][case_joueur.colonne] == 1
+        && masque[case_joueur.ligne + 2][case_joueur.colonne] == 1
+        && grille[case_joueur.ligne + 1][case_joueur.colonne] == case_joueur.chiffre
+        && grille[case_joueur.ligne + 2][case_joueur.colonne] == case_joueur.chiffre) {
+        return 0;
     }
+    //les règles du jeu sont respectées
     return 1;
 }
 
-int verifier_droite(int *grille[16], int *masque[16], CASE case_joueur) {
-    if (masque[case_joueur.ligne][case_joueur.colonne + 1] == 1 &&
-        masque[case_joueur.ligne][case_joueur.colonne + 2] == 1) {
-
-        if (grille[case_joueur.ligne][case_joueur.colonne + 1] == case_joueur.chiffre &&
-            grille[case_joueur.ligne][case_joueur.colonne + 2] == case_joueur.chiffre) {
-            return 0;
-        }
+int verifier_droite(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
+    //les règles du jeu ne sont pas respectées
+    if (case_joueur.colonne < taille - 2
+        && masque[case_joueur.ligne][case_joueur.colonne + 1] == 1
+        && masque[case_joueur.ligne][case_joueur.colonne + 2] == 1
+        && grille[case_joueur.ligne][case_joueur.colonne + 1] == case_joueur.chiffre
+        && grille[case_joueur.ligne][case_joueur.colonne + 2] == case_joueur.chiffre) {
+        return 0;
     }
-
+    //les règles du jeu sont respectées
     return 1;
 }
 
 int verifier_gauche(int *grille[16], int *masque[16], CASE case_joueur) {
-
-    if (masque[case_joueur.ligne][case_joueur.colonne - 1] == 1 &&
-        masque[case_joueur.ligne][case_joueur.colonne - 2] == 1) {
-
-        if (grille[case_joueur.ligne][case_joueur.colonne - 1] == case_joueur.chiffre &&
-            grille[case_joueur.ligne][case_joueur.colonne - 2] == case_joueur.chiffre) {
-            return 0;
-        }
-
+    //les règles du jeu ne sont pas respectées
+    if (case_joueur.colonne > 1
+        && masque[case_joueur.ligne][case_joueur.colonne - 1] == 1
+        && masque[case_joueur.ligne][case_joueur.colonne - 2] == 1
+        && grille[case_joueur.ligne][case_joueur.colonne - 1] == case_joueur.chiffre
+        && grille[case_joueur.ligne][case_joueur.colonne - 2] == case_joueur.chiffre) {
+        return 0;
     }
-    return 1; // vérification effectuée
+    //les règles du jeu sont respectées
+    return 1;
 
 }
 
@@ -191,6 +190,7 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
         // Si la valeur est déjà affichée
     {
         printf("La valeur que vous avez saisie est deja affichee\n");
+        afficher_grille(grille, masque, taille);
         case_joueur = saisir_case(taille);
     }
 
@@ -212,7 +212,7 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
     // Vérification du bas
     if (case_joueur.ligne < taille - 2) {
         nb_verif++;
-        if (verifier_bas(grille, masque, case_joueur)) {
+        if (verifier_bas(grille, masque, case_joueur, taille)) {
             verif_ok++;
         } else
             printf("Les deux cases du bas sont deja des %d\n", case_joueur.chiffre);
@@ -229,7 +229,7 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
     // Vérification de la droite
     if (case_joueur.colonne < taille - 2) {
         nb_verif++;
-        if (verifier_droite(grille, masque, case_joueur)) {
+        if (verifier_droite(grille, masque, case_joueur, taille)) {
             verif_ok++;
 
         } else {
@@ -273,20 +273,20 @@ void coup_correct(int *grille[16], int *masque[16], CASE case_joueur, int taille
             printf("Votre coup est correct !\n");
         }
         if (grille[case_joueur.ligne][case_joueur.colonne] != case_joueur.chiffre) { // Si le coup n'est pas correct
-            printf("Coup valide mais incorrect !\n");
+            printf("Votre coup n'est pas correct !\n");
             nb_coups_incorrects++;
         }
     } else { // Si le coup n'est pas valide
-        printf("Ce coup n'est pas valide\n");
+        printf("Vous ne respectez pas les regles du jeu\n");
         nb_vies--;
     }
 }
 
 int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     char choix_rejouer;
-    while (nb_vies > 0 && tableau_rempli(grille, masque, taille) == 0) {
+    while (nb_vies > 0 && tableau_rempli(masque, taille) == 0) {
         printf("Vous avez %d vies\n", nb_vies);
-        afficher_grille(grille, masque, taille);
+        afficher_grille(grille, masque, taille); // afficher la grille à compléter à chaque fois que l'utilisateur saisit une valeur
         case_joueur = saisir_case(taille);
         coup_correct(grille, masque, case_joueur, taille);
         if (nb_coups_incorrects == 3) {
