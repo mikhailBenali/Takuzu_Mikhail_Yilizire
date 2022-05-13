@@ -19,7 +19,7 @@ int **creer_matrice(int taille) {
 
 void remplir_matrice4(int **matrice) {
     int solution[4][4] = {{1, 0, 0, 1},
-                          {1, 0, 1, 0},
+                          {1, 0, 0, 1},
                           {0, 1, 1, 0},
                           {0, 1, 0, 1}};
 
@@ -253,7 +253,7 @@ int afficher_indice(int *grille[16], int *masque[16], CASE case_joueur, int tail
             retour_indice = indice_case_encadree(grille, masque, taille);
 
             if (retour_indice == 0) { // Si aucune valeur ne peut être mise entre deux cases identiques
-                retour_indice = indice_lignes_identiques(grille, masque, taille);
+                retour_indice = lignes_identiques(grille, masque, taille);
 
                 if (retour_indice == 0) { // Si aucune ligne n'est identique avec deux trous dedans
                     printf("Nous ne pouvons plus vous donner d'indice...");
@@ -277,7 +277,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille) {
             // Vérification du haut
             if (ligne >= 2) {
                 if (verifier_haut(grille, masque, case_temp)) {
-                    printf("Les deux cases du haut sont déjà à cette valeur, il faut y inserer une autre.\n");
+                    printf("Les deux cases du haut sont deja à cette valeur, il faut y inserer une autre.\n");
                     return 1;
                 }
             }
@@ -285,7 +285,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille) {
             // Vérification du bas
             if (ligne < taille - 2) {
                 if (verifier_bas(grille, masque, case_temp, taille)) {
-                    printf("Les deux cases du bas sont déjà à cette valeur, il faut y inserer une autre.\n");
+                    printf("Les deux cases du bas sont deja à cette valeur, il faut y inserer une autre.\n");
                     return 2;
                 }
             }
@@ -293,7 +293,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille) {
             // Vérification de la gauche
             if (colonne >= 2) {
                 if (verifier_gauche(grille, masque, case_temp)) {
-                    printf("Les deux cases de la gauche sont déjà à cette valeur, il faut y inserer une autre.\n");
+                    printf("Les deux cases de la gauche sont deja à cette valeur, il faut y inserer une autre.\n");
                     return 3;
                 }
             }
@@ -301,7 +301,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille) {
             // Vérification de la droite
             if (colonne < taille - 2) {
                 if (verifier_droite(grille, masque, case_temp, taille)) {
-                    printf("Les deux cases de la droite sont déjà à cette valeur, il faut y inserer une autre.\n");
+                    printf("Les deux cases de la droite sont deja à cette valeur, il faut y inserer une autre.\n");
                     return 4;
                 }
             }
@@ -339,23 +339,48 @@ int indice_case_encadree(int *grille[16], int *masque[16], int taille) {
 
 }
 
-int indice_lignes_identiques(int *grille[16], int *masque[16], int taille) {
+int lignes_identiques(int *grille[16], int *masque[16], int taille) {
+    int comparaison = 1;
     int *ligne = (int *) malloc(taille * sizeof(int));
-    int nb_val_affichees = 0;
+    int *ligne_deux = (int *) malloc(taille * sizeof(int));
     for (int i = 0; i < taille; i++) { // À chaque ligne
-
+        int nb_val_affichees = 0;
         for (int j = 0; j < taille; j++) {
             if (masque[i][j] == 1) {
                 nb_val_affichees++; // On compte le nombre de valeurs affichées sur cette ligne
             }
         }
+
+
         if (nb_val_affichees == taille) { // Si la ligne est pleine
             for (int val = 0; val < taille; val++) {
-                ligne[val] = grille[i][val]; // On copie la ligne de la grille
+                ligne[val] = grille[i][val]; // On copie la ligne pleine de la grille
+            } // Problème
+
+            // On parcourt le reste des lignes et on compare
+            for (int k = i; k < taille; k++) {
+                nb_val_affichees = 0;
+                for (int l = 0; l < taille; l++) {
+                    if (masque[i][l] == 1) {
+                        nb_val_affichees++; // On compte le nombre de valeurs affichées sur cette ligne
+                    }
+                    // Si elle est pleine
+                    if (nb_val_affichees == taille) {
+                        for (int m = 0; m < taille; m++) {
+                            ligne_deux[m] = grille[i][m]; // On copie la deuxieme ligne pleine de la grille
+                        }
+                    }
+                }
+                // On compare les deux lignes
+                for (int n = 0; n < taille; n++) {
+                    if (ligne[n] != ligne_deux[n]) {
+                        comparaison = 0; // La comparaison échoue si au moins une valeur est différente
+                    }
+                }
             }
         }
-        // todo à compléter
     }
+    return comparaison; // Si aucune ligne n'est identique à une autre
 }
 
 
@@ -380,6 +405,7 @@ int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     int replay = 0; // rejouer est déjà un nom de fonction
     nb_vies = 3;
     while (nb_vies > 0 && tableau_rempli(masque, taille) == 0) {
+        lignes_identiques(grille, masque, taille);
         if (nb_vies == 1) {
             printf("Vous avez %d vie\n", nb_vies);
         } else {
