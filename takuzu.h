@@ -36,8 +36,6 @@ void afficher_tab(int *tab[16], int taille);
 
 void afficher_grille(int *grille[16], int *masque[16], int taille);
 
-int valeur_choisie(int val);
-
 CASE saisir_case(int taille);
 
 int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille);

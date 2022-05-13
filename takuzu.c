@@ -19,7 +19,7 @@ int **creer_matrice(int taille) {
 
 void remplir_matrice4(int **matrice) {
     int solution[4][4] = {{1, 0, 0, 1},
-                          {1, 0, 0, 1},
+                          {1, 0, 1, 0},
                           {0, 1, 1, 0},
                           {0, 1, 0, 1}};
 
@@ -258,8 +258,14 @@ int afficher_indice(int *grille[16], int *masque[16], CASE case_joueur, int tail
                 if (retour_indice == 0) { // Si aucune ligne n'est identique avec deux trous dedans
                     printf("Nous ne pouvons plus vous donner d'indice...");
                     return 0;
+                } else { // On peut donner un indice de lignes presque identiques
+                    lignes_identiques(grille, masque, taille);
                 }
+            } else { // On peut donner un indice de cases identiques
+                indice_case_encadree(grille, masque, taille);
             }
+        } else { // On peut donner un indice de suite de deux cases
+            indice_suite_deux_cases(grille, masque, taille);
         }
         return 1;
     }
@@ -277,7 +283,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille) {
             // Vérification du haut
             if (ligne >= 2) {
                 if (verifier_haut(grille, masque, case_temp)) {
-                    printf("Les deux cases du haut sont deja à cette valeur, il faut y inserer une autre.\n");
+                    printf("Les deux cases en haut de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1);
                     return 1;
                 }
             }
@@ -285,7 +291,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille) {
             // Vérification du bas
             if (ligne < taille - 2) {
                 if (verifier_bas(grille, masque, case_temp, taille)) {
-                    printf("Les deux cases du bas sont deja à cette valeur, il faut y inserer une autre.\n");
+                    printf("Les deux cases en bas de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1);
                     return 2;
                 }
             }
@@ -293,7 +299,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille) {
             // Vérification de la gauche
             if (colonne >= 2) {
                 if (verifier_gauche(grille, masque, case_temp)) {
-                    printf("Les deux cases de la gauche sont deja à cette valeur, il faut y inserer une autre.\n");
+                    printf("Les deux cases de a gauche de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1);
                     return 3;
                 }
             }
@@ -301,7 +307,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille) {
             // Vérification de la droite
             if (colonne < taille - 2) {
                 if (verifier_droite(grille, masque, case_temp, taille)) {
-                    printf("Les deux cases de la droite sont deja à cette valeur, il faut y inserer une autre.\n");
+                    printf("Les deux cases de a droite de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1);
                     return 4;
                 }
             }
@@ -340,9 +346,18 @@ int indice_case_encadree(int *grille[16], int *masque[16], int taille) {
 }
 
 int lignes_identiques(int *grille[16], int *masque[16], int taille) {
-    int comparaison = 1;
-    int *ligne = (int *) malloc(taille * sizeof(int));
-    int *ligne_deux = (int *) malloc(taille * sizeof(int));
+    int lignes_egales = 0; // False car aucune ligne (presque) égale pour l'instant
+
+    /*
+     * On va parcourir chaque ligne à la recherche de la première ligne pleine et stocker son indice
+     * On parcourt de nouveau à partir de là toutes les lignes
+     * Pour chaque colonne, on vérifie si les nombres correspondent tous
+     * S'ils correspondent sauf 2, on peut donner un indice
+     */
+
+    int indice_ligne_pleine = -1, nb_val_coincidant = 0, indice_ligne_identique = -1;
+    int trou_un = -1, trou_deux = -1;
+
     for (int i = 0; i < taille; i++) { // À chaque ligne
         int nb_val_affichees = 0;
         for (int j = 0; j < taille; j++) {
@@ -350,37 +365,40 @@ int lignes_identiques(int *grille[16], int *masque[16], int taille) {
                 nb_val_affichees++; // On compte le nombre de valeurs affichées sur cette ligne
             }
         }
-
-
         if (nb_val_affichees == taille) { // Si la ligne est pleine
-            for (int val = 0; val < taille; val++) {
-                ligne[val] = grille[i][val]; // On copie la ligne pleine de la grille
-            } // Problème
+            indice_ligne_pleine = i;
+            break; // On sort de la boucle pour ne pas sélectionner une autre ligne pleine
+        }
+    }
 
-            // On parcourt le reste des lignes et on compare
-            for (int k = i; k < taille; k++) {
-                nb_val_affichees = 0;
-                for (int l = 0; l < taille; l++) {
-                    if (masque[i][l] == 1) {
-                        nb_val_affichees++; // On compte le nombre de valeurs affichées sur cette ligne
-                    }
-                    // Si elle est pleine
-                    if (nb_val_affichees == taille) {
-                        for (int m = 0; m < taille; m++) {
-                            ligne_deux[m] = grille[i][m]; // On copie la deuxieme ligne pleine de la grille
-                        }
-                    }
+    // On parcourt de nouveau la grille à la recherche d'une ligne identique
+    if (indice_ligne_pleine != -1) {
+        for (int i = indice_ligne_pleine + 1; i < taille; ++i) {
+            nb_val_coincidant = 0;
+            for (int j = 0; j < taille; ++j) {
+                if (masque[i][j] == 1 && grille[indice_ligne_pleine][j] == grille[i][j]) { // Si la valeur est affichée et est la même que dans la ligne pleine
+                    nb_val_coincidant++;
                 }
-                // On compare les deux lignes
-                for (int n = 0; n < taille; n++) {
-                    if (ligne[n] != ligne_deux[n]) {
-                        comparaison = 0; // La comparaison échoue si au moins une valeur est différente
-                    }
-                }
+            }
+            // Si la ligne contient taille moins deux coincidences (2 trous), on note l'indice de la ligne
+            if (nb_val_coincidant == taille - 2) {
+                indice_ligne_identique = i;
             }
         }
     }
-    return comparaison; // Si aucune ligne n'est identique à une autre
+    if (indice_ligne_identique != -1) {
+        for (int j = 0; j < taille; ++j) { // On parcourt la ligne identique
+            if (masque[indice_ligne_identique][j] == 0 && trou_un == -1) { // Si la valeur n'est pas affichée dans le masque et que l'on a l'indice d'aucun trou
+                trou_un = j;
+            } else if (masque[indice_ligne_identique][j] == 0 && trou_un != -1) { // Si la valeur n'est pas affichée dans le masque et que l'on a l'indice du premier trou
+                trou_deux = j;
+            }
+        }// Ayant nos deux indices, on peut proposer un indice
+        printf("La ligne %d est presque identique à la %d\nElle comporte un %d a la case : %d %d\nOr il ne peut pas y avoir deux lignes identiques\n", indice_ligne_pleine, indice_ligne_identique, grille[indice_ligne_pleine][trou_un], indice_ligne_pleine + 1, trou_un + 1);
+        printf("La ligne %d est presque identique à la %d\nElle comporte un %d a la case : %d %d\nOr il ne peut pas y avoir deux lignes identiques\n", indice_ligne_pleine, indice_ligne_identique, grille[indice_ligne_pleine][trou_deux], indice_ligne_pleine + 1, trou_deux + 1);
+        printf("Mettez donc les valeurs opposées dans ces cases");
+        lignes_egales = 1; // Deux lignes ont été trouvé (presque) égales
+    }
 }
 
 
