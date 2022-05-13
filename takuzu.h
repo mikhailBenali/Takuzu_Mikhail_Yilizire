@@ -62,4 +62,16 @@ int tableau_rempli(int *masque[16], int taille);
 
 int rejouer();
 
+int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille);
+
+int indice_case_encadree(int *grille[16], int *masque[16], int taille);
+
+int indice_lignes_identiques(int *grille[16], int *masque[16], int taille);
+
+void generer_ligne(int taille, int *ligne);
+
+int exces_repetitions(int *tab, int taille);
+
+int **generer_grille(int taille);
+
 #endif //TAKUZU_MIKHAIL_YILIZIRE_TAKUZU_H
