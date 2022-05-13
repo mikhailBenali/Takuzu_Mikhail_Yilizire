@@ -60,4 +60,10 @@ int **saisir_masque(int taille);
 
 int tableau_rempli(int *masque[16], int taille);
 
+void generer_ligne(int taille, int *ligne);
+
+int exces_repetitions(int *tab, int taille);
+
+int ** generer_grille(int taille);
+
 #endif //TAKUZU_MIKHAIL_YILIZIRE_TAKUZU_H

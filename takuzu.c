@@ -284,9 +284,9 @@ void coup_correct(int *grille[16], int *masque[16], CASE case_joueur, int taille
 
 int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     char choix_rejouer;
-    nb_vies = 3 ;
+    nb_vies = 3;
     while (nb_vies > 0 && tableau_rempli(masque, taille) == 0) {
-        if (nb_vies==1){ printf("Vous avez %d vie\n", nb_vies) ;}
+        if (nb_vies == 1) { printf("Vous avez %d vie\n", nb_vies); }
         else { printf("Vous avez %d vies\n", nb_vies); }
         afficher_grille(grille, masque, taille); // afficher la grille à compléter à chaque fois que l'utilisateur saisit une valeur
         case_joueur = saisir_case(taille);
@@ -298,14 +298,13 @@ int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     }
     if (nb_vies > 0) { // Si le joueur à gagné
         printf("Bravo, vous avez resolu le Takuzu !\n");
-    }
-    else
-    do {
-        printf("Vous avez epuise vos 3 vies\n");
-        printf("Souhaitez-vous rejouer ? :\no : oui\nn : non\n");
-        scanf(" %c", &choix_rejouer);
-    } while (choix_rejouer != 'o' && choix_rejouer != 'n'); // todo corriger la saisie sécurisée
-    if (choix_rejouer == 'o') { return 1 ;}
+    } else
+        do {
+            printf("Vous avez epuise vos 3 vies\n");
+            printf("Souhaitez-vous rejouer ? :\no : oui\nn : non\n");
+            scanf(" %c", &choix_rejouer);
+        } while (choix_rejouer != 'o' && choix_rejouer != 'n'); // todo corriger la saisie sécurisée
+    if (choix_rejouer == 'o') { return 1; }
     return 0;
 }
 
@@ -350,4 +349,81 @@ int tableau_rempli(int *masque[16], int taille) {
     } else {
         return 0;
     }
+}
+
+int exces_repetitions(int *tab, int taille) {
+    int i, bool_repetition = 0; //la ligne ne contient pas trois fois la même valeur
+    printf("exces_repetitions\n");
+    i = 0;
+    while (i < taille - 2 && bool_repetition == 0) {
+        if (tab[i] == tab[i + 1] && (tab[i + 1] == tab[i + 2])) { bool_repetition = 1; }
+        else { i++; }
+    }
+    i = 1;
+    while (i < taille - 3 && bool_repetition == 0) {
+        if (tab[i] == tab[i + 1] && (tab[i + 1] == tab[i + 2])) { bool_repetition = 1; }
+        else { i++; }
+    }
+    printf("bool_repetition=%d\n", bool_repetition);
+    return bool_repetition;
+}
+
+void generer_ligne(int taille, int *ligne) { //corriger nb répétitions
+    int i;
+    srand(time(NULL));
+    int nb_binaire = 0;
+    for (i = 0; i < taille; i++) {
+        ligne[i] = (int *) malloc(taille * sizeof(int)); //prévoir de l'espace mémoire pour la ligne
+    }
+    if (taille == 4); // une ligne : un nombre binaire entre 0 et 15
+    {
+        // le nombre binaire de chaque ligne : maximum 15/4
+
+        do {
+            nb_binaire = 0;
+            for (i = 0; i < taille; i++) {
+                ligne[i] = rand() % 2;
+                printf("valeur = %d\n", ligne[i]);
+
+                if (ligne[i] == 1) {
+                    nb_binaire++;
+                    printf("nb_binaire=%d\n", nb_binaire);
+                }
+            }
+        } while (nb_binaire > 15 / 4 || exces_repetitions(ligne, taille)); //éviter qu'un même chiffre s'affiche 3 fois de suite ou que le nombre binaire dépasse 15/4
+        printf("nb_binaire=%d\n", nb_binaire);
+
+        if (taille == 8) // une ligne : un nombre binaire entre 0 et 255/8
+        {// le nombre binaire de chaque ligne : maximum 255/8
+            do {
+                nb_binaire = 0;
+                for (i = 0; i < taille; i++) {
+                    ligne[i] = rand() % 2;
+                    printf("valeur = %d\n", ligne[i]);
+
+                    if (ligne[i] == 1) {
+                        nb_binaire++;
+                        printf("nb_binaire=%d\n", nb_binaire);
+                    }
+                }
+            } while (nb_binaire > 255 / 8 || exces_repetitions(ligne, taille)); //éviter qu'un même chiffre s'affiche 3 fois de suite ou que le nombre binaire dépasse 15/4
+        }
+    }
+    for (int i = 0; i < taille; i++) {
+        printf("%d ", ligne[i]);
+    }
+    printf("\n");
+}
+
+int **generer_grille(int taille) {
+    int i, **grille = (int **) malloc(taille * sizeof(int *)); //prévoir de l'espace mémoire
+    for (i = 0; i < taille; i++) {
+        grille[i] = (int *) malloc(taille * sizeof(int)); //prévoir de l'espace mémoire
+    }
+
+    for (i = 0; i < taille; i++) { generer_ligne(taille, grille[i]); }
+    printf("grille generee automatiquement\n");
+    afficher_tab(grille, taille);
+
+    return grille;
 }
