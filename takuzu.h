@@ -60,9 +60,9 @@ int **saisir_masque(int taille);
 
 int tableau_rempli(int *masque[16], int taille);
 
-void generer_ligne(int taille, int *ligne);
+int rejouer();
 
-int exces_repetitions(int *tab, int taille);
+void generer_ligne(int taille, int *ligne);
 
 int ** generer_grille(int taille);
 

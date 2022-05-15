@@ -254,13 +254,15 @@ int afficher_indice(int *grille[16], int *masque[16], CASE case_joueur, int tail
 
         // Les deux premiers indices sont déjà implémentés dans coup_valide
         if (case_joueur.ligne > 0 && case_joueur.ligne < taille) { // Si la ligne n'est pas au bord de la grille
-            if (grille[case_joueur.ligne - 1][case_joueur.colonne] == grille[case_joueur.ligne + 1][case_joueur.colonne]) { // On compare les lignes du dessus et du dessous
-                printf("Il y a la meme valeur au dessus et en dessous\n");
+            if (grille[case_joueur.ligne - 1][case_joueur.colonne] ==
+                grille[case_joueur.ligne + 1][case_joueur.colonne]) { // On compare les lignes du dessus et du dessous
+                printf("Il y a la meme valeur au dessus et en dessous\nVous devez mettre l'autre valeur\n");
             }
         }
         if (case_joueur.colonne > 0 && case_joueur.colonne < taille) {
-            if (grille[case_joueur.ligne][case_joueur.colonne - 1] == grille[case_joueur.ligne][case_joueur.colonne + 1]) {
-                printf("Il y a la meme valeur a droite et a gauche\n");
+            if (grille[case_joueur.ligne][case_joueur.colonne - 1] ==
+                grille[case_joueur.ligne][case_joueur.colonne + 1]) {
+                printf("Il y a la meme valeur a droite et a gauche\nVous devez mettre l'autre valeur\n");
             }
         }
     }
@@ -271,6 +273,7 @@ void coup_correct(int *grille[16], int *masque[16], CASE case_joueur, int taille
         if (grille[case_joueur.ligne][case_joueur.colonne] == case_joueur.chiffre) { // Lorsque le joueur mets le bon chiffre
             masque[case_joueur.ligne][case_joueur.colonne] = 1; // On modifie le masque pour afficher cette valeur
             printf("Votre coup est correct !\n");
+            nb_coups_incorrects = 0;
         }
         if (grille[case_joueur.ligne][case_joueur.colonne] != case_joueur.chiffre) { // Si le coup n'est pas correct
             printf("Votre coup n'est pas correct !\n");
@@ -283,11 +286,14 @@ void coup_correct(int *grille[16], int *masque[16], CASE case_joueur, int taille
 }
 
 int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
-    char choix_rejouer;
+    int replay = 0; // rejouer est déjà un nom de fonction
     nb_vies = 3;
     while (nb_vies > 0 && tableau_rempli(masque, taille) == 0) {
-        if (nb_vies == 1) { printf("Vous avez %d vie\n", nb_vies); }
-        else { printf("Vous avez %d vies\n", nb_vies); }
+        if (nb_vies == 1) {
+            printf("Vous avez %d vie\n", nb_vies);
+        } else {
+            printf("Vous avez %d vies\n", nb_vies);
+        }
         afficher_grille(grille, masque, taille); // afficher la grille à compléter à chaque fois que l'utilisateur saisit une valeur
         case_joueur = saisir_case(taille);
         coup_correct(grille, masque, case_joueur, taille);
@@ -298,18 +304,16 @@ int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     }
     if (nb_vies > 0) { // Si le joueur à gagné
         printf("Bravo, vous avez resolu le Takuzu !\n");
-    } else
-        do {
-            printf("Vous avez epuise vos 3 vies\n");
-            printf("Souhaitez-vous rejouer ? :\no : oui\nn : non\n");
-            scanf(" %c", &choix_rejouer);
-        } while (choix_rejouer != 'o' && choix_rejouer != 'n'); // todo corriger la saisie sécurisée
-    if (choix_rejouer == 'o') { return 1; }
-    return 0;
+        replay = rejouer();
+    } else {
+        printf("Vous avez epuise vos 3 vies\n");
+        replay = rejouer();
+    }
 }
 
 int **saisir_masque(int taille) {
     int i, j, **masque;
+    char saisie_case;
     int nb_val_affichees;
     masque = (int **) malloc(taille * sizeof(int *)); // Initialisation du tableau 2D
     for (i = 0; i < taille; i++) {
@@ -320,12 +324,15 @@ int **saisir_masque(int taille) {
         for (i = 0; i < taille; i++) {
             for (j = 0; j < taille; j++) {
                 do {
+
                     printf("Entrez une valeur pour la ligne %d et colonne %d:\n", i + 1, j + 1);
-                    scanf("%d", &masque[i][j]);
-                    if (masque[i][j] == 1) {
-                        nb_val_affichees++;
-                    }
-                } while (masque[i][j] != 1 && masque[i][j] != 0);
+                    fflush(stdin);
+                    scanf(" %c", &saisie_case);
+                } while ((int) saisie_case < '0' || (int) saisie_case > '1');
+                masque[i][j] = (int) saisie_case - '0'; // On convertit le chiffre en code ascii et on lui retire 48 (code du '0') afin d'obtenir le nombre en int
+                if (masque[i][j] == 1) {
+                    nb_val_affichees++;
+                }
             }
         }
         if (nb_val_affichees == 16) {
@@ -351,79 +358,16 @@ int tableau_rempli(int *masque[16], int taille) {
     }
 }
 
-int exces_repetitions(int *tab, int taille) {
-    int i, bool_repetition = 0; //la ligne ne contient pas trois fois la même valeur
-    printf("exces_repetitions\n");
-    i = 0;
-    while (i < taille - 2 && bool_repetition == 0) {
-        if (tab[i] == tab[i + 1] && (tab[i + 1] == tab[i + 2])) { bool_repetition = 1; }
-        else { i++; }
+int rejouer() {
+    char choix_rejouer = 'n'; // Valeur par défaut
+    do {
+        printf("Souhaitez-vous rejouer ? :\no : oui\nn : non\n");
+        fflush(stdin);
+        scanf(" %c", &choix_rejouer);
+    } while (choix_rejouer != 'o' && choix_rejouer != 'n');
+    if (choix_rejouer == 'o') {
+        return 1;
+    } else {
+        return 0;
     }
-    i = 1;
-    while (i < taille - 3 && bool_repetition == 0) {
-        if (tab[i] == tab[i + 1] && (tab[i + 1] == tab[i + 2])) { bool_repetition = 1; }
-        else { i++; }
-    }
-    printf("bool_repetition=%d\n", bool_repetition);
-    return bool_repetition;
-}
-
-void generer_ligne(int taille, int *ligne) { //corriger nb répétitions
-    int i;
-    srand(time(NULL));
-    int nb_binaire = 0;
-    for (i = 0; i < taille; i++) {
-        ligne[i] = (int *) malloc(taille * sizeof(int)); //prévoir de l'espace mémoire pour la ligne
-    }
-    if (taille == 4); // une ligne : un nombre binaire entre 0 et 15
-    {
-        // le nombre binaire de chaque ligne : maximum 15/4
-
-        do {
-            nb_binaire = 0;
-            for (i = 0; i < taille; i++) {
-                ligne[i] = rand() % 2;
-                printf("valeur = %d\n", ligne[i]);
-
-                if (ligne[i] == 1) {
-                    nb_binaire++;
-                    printf("nb_binaire=%d\n", nb_binaire);
-                }
-            }
-        } while (nb_binaire > 15 / 4 || exces_repetitions(ligne, taille)); //éviter qu'un même chiffre s'affiche 3 fois de suite ou que le nombre binaire dépasse 15/4
-        printf("nb_binaire=%d\n", nb_binaire);
-
-        if (taille == 8) // une ligne : un nombre binaire entre 0 et 255/8
-        {// le nombre binaire de chaque ligne : maximum 255/8
-            do {
-                nb_binaire = 0;
-                for (i = 0; i < taille; i++) {
-                    ligne[i] = rand() % 2;
-                    printf("valeur = %d\n", ligne[i]);
-
-                    if (ligne[i] == 1) {
-                        nb_binaire++;
-                        printf("nb_binaire=%d\n", nb_binaire);
-                    }
-                }
-            } while (nb_binaire > 255 / 8 || exces_repetitions(ligne, taille)); //éviter qu'un même chiffre s'affiche 3 fois de suite ou que le nombre binaire dépasse 15/4
-        }
-    }
-    for (int i = 0; i < taille; i++) {
-        printf("%d ", ligne[i]);
-    }
-    printf("\n");
-}
-
-int **generer_grille(int taille) {
-    int i, **grille = (int **) malloc(taille * sizeof(int *)); //prévoir de l'espace mémoire
-    for (i = 0; i < taille; i++) {
-        grille[i] = (int *) malloc(taille * sizeof(int)); //prévoir de l'espace mémoire
-    }
-
-    for (i = 0; i < taille; i++) { generer_ligne(taille, grille[i]); }
-    printf("grille generee automatiquement\n");
-    afficher_tab(grille, taille);
-
-    return grille;
 }
