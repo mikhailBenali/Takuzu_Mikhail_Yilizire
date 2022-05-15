@@ -10,10 +10,10 @@ int main() {
     while (rejouer == 1) {
         do {
             printf("Quelle taille de grille voulez-vous utiliser ?\n");
-            printf("1 : 4x4\n2 : 8x8\n3 : 16x16\n");
+            printf("1 : 4x4\n2 : 8x8\n");
             fflush(stdin);
             scanf(" %c", &taille_char); // un espace pour éviter que la boucle s'exécute deux fois
-        } while (taille_char != '1' && taille_char != '2' && taille_char != '3');
+        } while (taille_char != '1' && taille_char != '2');
         do {
             printf("Que souhaitez-vous faire ? : \n");
             printf("1 : Voulez-vous saisir un masque\n2 : Utiliser un masque genere automatiquement\n3 : Laisser l'ordinateur resoudre une grille\n");
@@ -25,8 +25,6 @@ int main() {
             taille_int = 4;
         else if (taille_char == '2')
             taille_int = 8;
-        else if (taille_char == '3')
-            taille_int = 16;
 
         if (choix_masque_char == '1') {
             choix_masque_int = 1;

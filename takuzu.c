@@ -293,7 +293,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille, int ut
                     printf("Les deux cases en haut de la case %d %d sont deja a la valeur %d, il faut y en inserer une autre\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne - 1][case_temp.colonne]);
                     if (utilisateur) { // Si c'est l'ordinateur qui joue
                         masque[case_temp.ligne][case_temp.colonne] = 1; // On affiche la valeur
-                        Sleep(3000);
+                        Sleep(5000);
                     }
                     return 1;
                 }
@@ -305,7 +305,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille, int ut
                     printf("Les deux cases en bas de la case %d %d sont deja a la valeur %d, il faut y en inserer une autre\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne + 1][case_temp.colonne]);
                     if (utilisateur) { // Si c'est l'ordinateur qui joue
                         masque[case_temp.ligne][case_temp.colonne] = 1; // On affiche la valeur
-                        Sleep(3000);
+                        Sleep(5000);
                     }
                     return 2;
                 }
@@ -317,7 +317,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille, int ut
                     printf("Les deux cases a gauche de la case %d %d sont deja a la valeur %d, il faut y en inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne][case_temp.colonne - 1]);
                     if (utilisateur) { // Si c'est l'ordinateur qui joue
                         masque[case_temp.ligne][case_temp.colonne] = 1; // On affiche la valeur
-                        Sleep(3000);
+                        Sleep(5000);
                     }
                     return 3;
                 }
@@ -329,7 +329,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille, int ut
                     printf("Les deux cases a droite de la case %d %d sont deja a la valeur %d, il faut y en inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne][case_temp.colonne + 1]);
                     if (utilisateur) { // Si c'est l'ordinateur qui joue
                         masque[case_temp.ligne][case_temp.colonne] = 1; // On affiche la valeur
-                        Sleep(3000);
+                        Sleep(5000);
                     }
                     return 4;
                 }
@@ -354,7 +354,7 @@ int indice_case_encadree(int *grille[16], int *masque[16], int taille, int utili
                         printf("Il y a la meme valeur au dessus et en dessous de la case %d %d\nIl faut y mettre une autre valeur\n", case_temp.ligne + 1, case_temp.colonne + 1);
                         if (utilisateur) { // Si c'est l'ordinateur qui joue
                             masque[case_temp.ligne][case_temp.colonne] = 1;
-                            Sleep(3000);
+                            Sleep(5000);
                         }
                         return 1;
                     }
@@ -366,7 +366,7 @@ int indice_case_encadree(int *grille[16], int *masque[16], int taille, int utili
                         printf("Il y a la meme valeur a droite et a gauche de la case %d %d\nIl faut y mettre une autre valeur\n", case_temp.ligne + 1, case_temp.colonne + 1);
                         if (utilisateur) { // Si c'est l'ordinateur qui joue
                             masque[case_temp.ligne][case_temp.colonne] = 1;
-                            Sleep(3000);
+                            Sleep(5000);
                         }
                         return 2;
                     }
@@ -409,7 +409,6 @@ int lignes_identiques(int *grille[16], int *masque[16], int taille, int utilisat
             nb_val_diff = 0;
             for (int j = 0; j < taille; ++j) {
                 if (masque[i][j] == 1 && grille[indice_ligne_pleine][j] == grille[i][j]) { // Si la valeur est affichée et est la même que dans la ligne pleine
-                    printf("%d coincide avec %d\n", grille[indice_ligne_pleine][j], grille[i][j]);
                     nb_val_coincidant++;
                 } else if (masque[i][j] == 1 && grille[indice_ligne_pleine][j] != grille[i][j]) {
                     nb_val_diff++;
@@ -430,7 +429,6 @@ int lignes_identiques(int *grille[16], int *masque[16], int taille, int utilisat
                 trou_deux = j;
             }
         }// Ayant nos deux indices, on peut proposer un indice
-        printf("Trou un : %d\nTrou deux : %d\n", trou_un, trou_deux);
         printf("La ligne %d est presque identique a la %d\nElle comporte un %d a la case %d %d et un %d a la case %d %d\nOr il ne peut pas y avoir deux lignes identiques\n", indice_ligne_pleine + 1, indice_ligne_identique + 1, grille[indice_ligne_pleine][trou_un], indice_ligne_pleine + 1,
                trou_un + 1,
                grille[indice_ligne_pleine][trou_deux], indice_ligne_pleine + 1, trou_deux + 1);
@@ -443,7 +441,7 @@ int lignes_identiques(int *grille[16], int *masque[16], int taille, int utilisat
             if (masque[indice_ligne_identique][trou_deux] == 0) {
                 masque[indice_ligne_identique][trou_deux] = 1;
             }
-            Sleep(3000);
+            Sleep(5000);
         }
         return 1; // Deux lignes ont été trouvées (presque) égales
     }
@@ -582,19 +580,19 @@ int jeu_ordinateur(int **grille, int **masque, int taille) {
                     masque[case_ordinateur.ligne][case_ordinateur.colonne] = 1;
                     changement_case = 1;
                     printf("On a change la case %d %d pour y mettre un %d\n", case_ordinateur.ligne + 1, case_ordinateur.colonne + 1, grille[case_ordinateur.ligne][case_ordinateur.colonne]);
-                    Sleep(3000);
+                    Sleep(5000);
                 }
             } while (changement_case == 0);
         }
 
     } while (tableau_rempli(masque, taille) != 1);
-
+    printf("\nVoila votre grille remplie !\n");
 
 }
 
-// PARTIE 3
+// PARTIE 3 (non terminée)
 
-void generer_ligne(int *ligne, int taille) { //corriger nb répétitions
+void generer_ligne(int *ligne, int taille) { // corriger nb répétitions
     int i;
     srand(time(NULL));
     int nb_binaire = 0;

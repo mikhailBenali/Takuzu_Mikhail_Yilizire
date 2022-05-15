@@ -66,11 +66,6 @@ int tableau_rempli(int *masque[16], int taille);
 
 int rejouer();
 
-void generer_ligne(int taille, int *ligne);
-
-int ** generer_grille(int taille);
-
-int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille);
 int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille, int utilisateur);
 
 int indice_case_encadree(int *grille[16], int *masque[16], int taille, int utilisateur);
@@ -79,7 +74,7 @@ int lignes_identiques(int *grille[16], int *masque[16], int taille, int utilisat
 
 // PARTIE 2
 
-int jeu_ordinateur(int **grille, int **masque,int taille);
+int jeu_ordinateur(int **grille, int **masque, int taille);
 
 // PARTIE 3
 
