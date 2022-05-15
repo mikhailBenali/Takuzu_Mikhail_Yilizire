@@ -2,7 +2,6 @@
 // Created by Mikhaïl on 4/6/2022.
 //
 
-// todo saisie sécurisée de ligne et de colonne
 #include "takuzu.h"
 
 int nb_vies = 3;
@@ -230,6 +229,7 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
             verif_ok++;
         }
     }
+
     if (verif_ok ==
         nb_verif) { // S'il y a autant de vérifications validées que le nombre de vérifications, elles sont toutes validées
         return 1;
@@ -242,11 +242,12 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
 int afficher_indice(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     char reponse_indice;
     int retour_indice;
-    printf("Voulez-vous un indice ? o\\n : \n");
-    scanf(" %c", &reponse_indice);
+    do {
+        printf("Voulez-vous un indice ? o\\n : \n");
+        scanf(" %c", &reponse_indice);
+    } while (reponse_indice != 'o' && reponse_indice != 'n');
 
     if (reponse_indice == 'o') {
-
         retour_indice = indice_suite_deux_cases(grille, masque, taille);
 
         if (retour_indice == 0) { // Si aucune suite de deux cases n'est présente
@@ -256,23 +257,23 @@ int afficher_indice(int *grille[16], int *masque[16], CASE case_joueur, int tail
                 retour_indice = lignes_identiques(grille, masque, taille);
 
                 if (retour_indice == 0) { // Si aucune ligne n'est identique avec deux trous dedans
-                    printf("Nous ne pouvons plus vous donner d'indice...");
+                    printf("Il n'y a pas assez d'information pour vous donner un indice... Tentez quelque chose\n");
                     return 0;
-                } else { // On peut donner un indice de lignes presque identiques
-                    lignes_identiques(grille, masque, taille);
+                } else {
+                    return 1;
                 }
-            } else { // On peut donner un indice de cases identiques
-                indice_case_encadree(grille, masque, taille);
+            } else {
+                return 1;
             }
-        } else { // On peut donner un indice de suite de deux cases
-            indice_suite_deux_cases(grille, masque, taille);
+        } else {
+            return 1;
         }
-        return 1;
     }
 }
 
 int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille) {
     CASE case_temp = {0, 0, 0}; // Il nous faut une variable de type CASE pour les fonction de vérification
+    CASE case_temp2 = {0, 0, 1};
 
     for (int ligne = 0; ligne < taille; ligne++) {
         for (int colonne = 0; colonne < taille; colonne++) {
@@ -280,34 +281,39 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille) {
             case_temp.ligne = ligne;
             case_temp.colonne = colonne;
 
+            case_temp2.ligne = ligne;
+            case_temp2.colonne = colonne;
+
+            // On doit verifier avec case_temp et case_temp2 car il faut tester avec 1 et 0 comme chiffre
+
             // Vérification du haut
             if (ligne >= 2) {
-                if (verifier_haut(grille, masque, case_temp)) {
-                    printf("Les deux cases en haut de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1);
+                if ((verifier_haut(grille, masque, case_temp) == 0 || verifier_haut(grille, masque, case_temp2) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
+                    printf("Les deux cases en haut de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne - 1][case_temp.colonne]);
                     return 1;
                 }
             }
 
             // Vérification du bas
             if (ligne < taille - 2) {
-                if (verifier_bas(grille, masque, case_temp, taille)) {
-                    printf("Les deux cases en bas de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1);
+                if ((verifier_bas(grille, masque, case_temp, taille) == 0 || verifier_bas(grille, masque, case_temp2, taille) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
+                    printf("Les deux cases en bas de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne + 1][case_temp.colonne]);
                     return 2;
                 }
             }
 
             // Vérification de la gauche
             if (colonne >= 2) {
-                if (verifier_gauche(grille, masque, case_temp)) {
-                    printf("Les deux cases de a gauche de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1);
+                if ((verifier_gauche(grille, masque, case_temp) == 0 || verifier_gauche(grille, masque, case_temp2) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
+                    printf("Les deux cases de a gauche de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne][case_temp.colonne - 1]);
                     return 3;
                 }
             }
 
             // Vérification de la droite
             if (colonne < taille - 2) {
-                if (verifier_droite(grille, masque, case_temp, taille)) {
-                    printf("Les deux cases de a droite de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1);
+                if ((verifier_droite(grille, masque, case_temp, taille) == 0 || verifier_droite(grille, masque, case_temp2, taille) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
+                    printf("Les deux cases de a droite de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne][case_temp.colonne + 1]);
                     return 4;
                 }
             }
@@ -325,18 +331,20 @@ int indice_case_encadree(int *grille[16], int *masque[16], int taille) {
             case_temp.ligne = ligne;
             case_temp.colonne = colonne;
 
-            if (case_temp.ligne > 0 && case_temp.ligne < taille) { // Si la ligne n'est pas au bord de la grille
-                if (grille[case_temp.ligne - 1][case_temp.colonne] ==
-                    grille[case_temp.ligne + 1][case_temp.colonne]) { // On compare les lignes du dessus et du dessous
-                    printf("Il y a la meme valeur au dessus et en dessous\nVous devez mettre l'autre valeur\n");
-                    return 1;
+            if (case_temp.ligne > 0 && case_temp.ligne < taille - 1) { // Si la ligne n'est pas au bord de la grille
+                if (grille[case_temp.ligne - 1][case_temp.colonne] == grille[case_temp.ligne + 1][case_temp.colonne] && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est encadrée et non affichée
+                    if (masque[case_temp.ligne - 1][case_temp.colonne] == 1 && masque[case_temp.ligne + 1][case_temp.colonne] == 1) {
+                        printf("Il y a la meme valeur au dessus et en dessous de la case %d %d\nVous devez mettre une autre valeur\n", case_temp.ligne + 1, case_temp.colonne + 1);
+                        return 1;
+                    }
                 }
             }
-            if (case_temp.colonne > 0 && case_temp.colonne < taille) {
-                if (grille[case_temp.ligne][case_temp.colonne - 1] ==
-                    grille[case_temp.ligne][case_temp.colonne + 1]) {
-                    printf("Il y a la meme valeur a droite et a gauche\nVous devez mettre l'autre valeur\n");
-                    return 2;
+            if (case_temp.colonne > 0 && case_temp.colonne < taille - 1) {
+                if (grille[case_temp.ligne][case_temp.colonne - 1] == grille[case_temp.ligne][case_temp.colonne + 1] && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est encadrée et non affichée
+                    if (masque[case_temp.ligne][case_temp.colonne - 1] == 1 && masque[case_temp.ligne][case_temp.colonne + 1] == 1) {
+                        printf("Il y a la meme valeur a droite et a gauche de la case %d %d\nVous devez mettre une autre valeur\n", case_temp.ligne + 1, case_temp.colonne + 1);
+                        return 2;
+                    }
                 }
             }
         }
@@ -346,8 +354,6 @@ int indice_case_encadree(int *grille[16], int *masque[16], int taille) {
 }
 
 int lignes_identiques(int *grille[16], int *masque[16], int taille) {
-    int lignes_egales = 0; // False car aucune ligne (presque) égale pour l'instant
-
     /*
      * On va parcourir chaque ligne à la recherche de la première ligne pleine et stocker son indice
      * On parcourt de nouveau à partir de là toutes les lignes
@@ -394,11 +400,12 @@ int lignes_identiques(int *grille[16], int *masque[16], int taille) {
                 trou_deux = j;
             }
         }// Ayant nos deux indices, on peut proposer un indice
-        printf("La ligne %d est presque identique à la %d\nElle comporte un %d a la case : %d %d\nOr il ne peut pas y avoir deux lignes identiques\n", indice_ligne_pleine, indice_ligne_identique, grille[indice_ligne_pleine][trou_un], indice_ligne_pleine + 1, trou_un + 1);
-        printf("La ligne %d est presque identique à la %d\nElle comporte un %d a la case : %d %d\nOr il ne peut pas y avoir deux lignes identiques\n", indice_ligne_pleine, indice_ligne_identique, grille[indice_ligne_pleine][trou_deux], indice_ligne_pleine + 1, trou_deux + 1);
-        printf("Mettez donc les valeurs opposées dans ces cases");
-        lignes_egales = 1; // Deux lignes ont été trouvé (presque) égales
+        printf("La ligne %d est presque identique a la %d\nElle comporte un %d a la case %d %d et un %d a la case %d %d\nOr il ne peut pas y avoir deux lignes identiques\n", indice_ligne_pleine+2, indice_ligne_identique+1, grille[indice_ligne_pleine][trou_un], indice_ligne_pleine + 1, trou_un + 1,
+               grille[indice_ligne_pleine][trou_deux], indice_ligne_pleine + 1, trou_deux + 1);
+        printf("Mettez donc les valeurs opposees dans les trous\n");
+        return 1; // Deux lignes ont été trouvées (presque) égales
     }
+    return 0;
 }
 
 
@@ -423,7 +430,6 @@ int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     int replay = 0; // rejouer est déjà un nom de fonction
     nb_vies = 3;
     while (nb_vies > 0 && tableau_rempli(masque, taille) == 0) {
-        lignes_identiques(grille, masque, taille);
         if (nb_vies == 1) {
             printf("Vous avez %d vie\n", nb_vies);
         } else {
@@ -444,6 +450,7 @@ int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
         printf("Vous avez epuise vos 3 vies\n");
         replay = rejouer();
     }
+    return replay;
 }
 
 int **saisir_masque(int taille) {
