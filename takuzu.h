@@ -70,8 +70,8 @@ int indice_case_encadree(int *grille[16], int *masque[16], int taille);
 
 int lignes_identiques(int *grille[16], int *masque[16], int taille);
 
-void generer_ligne(int taille, int *ligne);
+void generer_ligne(int *ligne, int taille);
 
-int **generer_grille(int taille);
+void generer_grille(int **grille, int taille);
 
 #endif //TAKUZU_MIKHAIL_YILIZIRE_TAKUZU_H

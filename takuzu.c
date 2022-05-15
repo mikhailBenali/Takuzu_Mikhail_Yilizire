@@ -400,7 +400,8 @@ int lignes_identiques(int *grille[16], int *masque[16], int taille) {
                 trou_deux = j;
             }
         }// Ayant nos deux indices, on peut proposer un indice
-        printf("La ligne %d est presque identique a la %d\nElle comporte un %d a la case %d %d et un %d a la case %d %d\nOr il ne peut pas y avoir deux lignes identiques\n", indice_ligne_pleine+2, indice_ligne_identique+1, grille[indice_ligne_pleine][trou_un], indice_ligne_pleine + 1, trou_un + 1,
+        printf("La ligne %d est presque identique a la %d\nElle comporte un %d a la case %d %d et un %d a la case %d %d\nOr il ne peut pas y avoir deux lignes identiques\n", indice_ligne_pleine + 2, indice_ligne_identique + 1, grille[indice_ligne_pleine][trou_un], indice_ligne_pleine + 1,
+               trou_un + 1,
                grille[indice_ligne_pleine][trou_deux], indice_ligne_pleine + 1, trou_deux + 1);
         printf("Mettez donc les valeurs opposees dans les trous\n");
         return 1; // Deux lignes ont été trouvées (presque) égales
@@ -516,81 +517,132 @@ int rejouer() {
 
 // PARTIE 3
 
-int exces_repetitions(int *tab, int taille) {
-    int i, bool_repetition = 0; //la ligne ne contient pas trois fois la même valeur
-    printf("exces_repetitions\n");
-    i = 0;
-    while (i < taille - 2 && bool_repetition == 0) {
-        if (tab[i] == tab[i + 1] && (tab[i + 1] == tab[i + 2])) { bool_repetition = 1; }
-        else { i++; }
+void generer_ligne(int *ligne, int taille) { //corriger nb répétitions
+    int i;
+    for (i = 0; i < taille; i++) {
+        ligne[i] = rand() % 2;
     }
-    i = 1;
-    while (i < taille - 3 && bool_repetition == 0) {
-        if (tab[i] == tab[i + 1] && (tab[i + 1] == tab[i + 2])) { bool_repetition = 1; }
-        else { i++; }
-    }
-    printf("bool_repetition=%d\n", bool_repetition);
-    return bool_repetition;
 }
 
-void generer_ligne(int taille, int *ligne) { //corriger nb répétitions
-    int i;
-    srand(time(NULL));
-    int nb_binaire = 0;
-    for (i = 0; i < taille; i++) {
-        ligne[i] = (int *) malloc(taille * sizeof(int)); //prévoir de l'espace mémoire pour la ligne
-    }
-    if (taille == 4); // une ligne : un nombre binaire entre 0 et 15
-    {
-        // le nombre binaire de chaque ligne : maximum 15/4
-
-        do {
-            nb_binaire = 0;
-            for (i = 0; i < taille; i++) {
-                ligne[i] = rand() % 2;
-                printf("valeur = %d\n", ligne[i]);
-
-                if (ligne[i] == 1) {
-                    nb_binaire++;
-                    printf("nb_binaire=%d\n", nb_binaire);
-                }
-            }
-        } while (nb_binaire > 15 / 4 || exces_repetitions(ligne, taille)); //éviter qu'un même chiffre s'affiche 3 fois de suite ou que le nombre binaire dépasse 15/4
-        printf("nb_binaire=%d\n", nb_binaire);
-
-        if (taille == 8) // une ligne : un nombre binaire entre 0 et 255/8
-        {// le nombre binaire de chaque ligne : maximum 255/8
-            do {
-                nb_binaire = 0;
-                for (i = 0; i < taille; i++) {
-                    ligne[i] = rand() % 2;
-                    printf("valeur = %d\n", ligne[i]);
-
-                    if (ligne[i] == 1) {
-                        nb_binaire++;
-                        printf("nb_binaire=%d\n", nb_binaire);
-                    }
-                }
-            } while (nb_binaire > 255 / 8 || exces_repetitions(ligne, taille)); //éviter qu'un même chiffre s'affiche 3 fois de suite ou que le nombre binaire dépasse 15/4
+int somme_1(int **grille, int taille) {
+    int som_tot = 0;
+    int nb0 = 0;
+    for (int i = 0; i < taille; i++) {
+        for (int j = 0; j < taille; j++) {
+            if (grille[i][j] == 0) { nb0++; }
+            som_tot += grille[i][j];
         }
     }
-    for (int i = 0; i < taille; i++) {
-        printf("%d ", ligne[i]);
-    }
-    printf("\n");
+    printf("som_tot=%d\n", som_tot);
+    if (som_tot >= taille * taille / 2)
+        return 0;
+    return 1;
 }
 
-int **generer_grille(int taille) {
-    int i, **grille = (int **) malloc(taille * sizeof(int *)); //prévoir de l'espace mémoire
-    for (i = 0; i < taille; i++) {
-        grille[i] = (int *) malloc(taille * sizeof(int)); //prévoir de l'espace mémoire
+int som_lignes(int **grille, int ligne, int taille) {
+    int som_l = 0;
+    for (int j = 0; j < taille; j++) {
+        som_l += grille[ligne][j];
+        printf("grille[ligne][j]=%d\n", grille[ligne][j]);
     }
+    printf("som_l=%d\n", som_l);
+    if (som_l > taille / 2 || som_l < 2)
+        return 0;
+    return 1;
+}
 
-    for (i = 0; i < taille; i++) {
-        generer_ligne(taille, grille[i]);
-    }
-    printf("grille generee automatiquement\n");
+int som_col(int **grille, int colonne, int taille) {
+    int som_c = 0;
     afficher_tab(grille, taille);
+    for (int i = 0; i < taille; i++) {
+        som_c += grille[i][colonne];
+        printf("grille[ligne][j]=%d", grille[i][colonne]);
+        printf("i=%d j=%d som_l=%d\n", i, colonne, som_c);
+    }
+    if (som_c > taille / 2 || som_c < 2)
+        return 0;
+    return 1;
+}
 
-    return grille;
+int verification_grille(int **grille, int taille) {
+    int i, l = 0;
+    int ligne_valide = 1; //booleen : si la ligne est valide
+
+    /*// Vérification des deux premières lignes
+    for (i = 0; i < 2; ++i) {
+        for (int j = 0; j < taille - 2; ++j) {
+            if ((grille[i][j] == grille[i][j + 1] && grille[i][j + 1] == grille[i][j + 2])) {//comparaison avec les deux valeurs de droite et du haut
+                ligne_valide = 0;//ligne incorrecte
+            }
+
+            while (ligne_valide == 0) { //tant que la ligne est incorrecte
+                generer_ligne(grille[i], taille);//générer une nouvelle ligne
+                ligne_valide = 1;
+                for (int l = 0; l < taille - 2; ++l) {
+                    if ((grille[i][l] == grille[i][l + 1] && grille[i][l + 1] == grille[i][l + 2])) {
+                        //revérifier qu'il n'y a pas de triplon sur la ligne et la colonne
+                        ligne_valide = 0;
+                    }
+                }
+            }
+        }
+        // Vérification du reste
+        for (i = 2; i < taille - 2; i++) {
+            for (int j = 0; j < taille - 2; ++j) {
+                if ((grille[i][j] == grille[i][j + 1] && grille[i][j + 1] == grille[i][j + 2])
+                    || (grille[i][j] == grille[i - 1][j] && grille[i - 1][j] == grille[i - 2][j])) {//comparaison avec les deux valeurs de droite et du haut
+                    ligne_valide = 0;//ligne incorrecte
+                }
+
+                while (ligne_valide == 0) { //tant que la ligne est incorrecte
+                    generer_ligne(grille[i], taille);//générer une nouvelle ligne
+                    ligne_valide = 1;//le remplacement de la ligne est fait
+                    for (int l = 0; l < taille - 2; ++l) {
+                        if ((grille[i][j] == grille[i][j + 1] && grille[i][j + 1] == grille[i][j + 2])
+                            || (grille[i][j] == grille[i - 1][j] && grille[i - 1][j] == grille[i - 2][j])) {
+                            //revérifier qu'il n'y a pas de triplon sur la ligne et la colonne
+                            ligne_valide = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }*/
+    for (i = 0; i < 2; ++i) {
+        for (int j = 0; j < taille - 2; ++j) { if (!(grille[i][j] == grille[i][j + 1] && grille[i][j + 1] == grille[i][j + 2])) { ligne_valide++; }}
+    }
+    if (ligne_valide != 1)
+        return 0;
+    else
+        return 1;
+}
+
+
+void generer_grille (int **grille, int taille) {
+    srand(time(NULL));
+
+    int **grille_auto = (int **) malloc(taille * sizeof(int *)); //créer une grille contennant 0 ou 1
+    for (int k = 0; k < taille; k++) {
+        grille_auto[k] = (int *) malloc(taille * sizeof(int)); //
+    }
+
+    for (int l = 0; l < taille; ++l) {
+        generer_ligne(grille_auto[l], taille);
+    }
+
+    for (int a = 0; a < taille; a++) {
+        for (int b = 0; b < taille; b++) {
+
+            while (!(somme_1(grille_auto, taille)
+                     || verification_grille(grille_auto, taille)
+                     || som_lignes(grille_auto, a, taille)
+                     || som_col(grille, b, taille))) {//vérifier le nombre total de 1
+                verification_grille(grille_auto[b], taille);
+            }
+        }
+
+    }
+    printf("...\n");
+    afficher_tab(grille_auto, taille);
+    printf("...\n");
 }

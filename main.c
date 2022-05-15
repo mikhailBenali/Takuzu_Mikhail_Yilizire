@@ -29,11 +29,6 @@ int main() {
         else if (taille_char == '3')
             taille_int = 16;
 
-        //générer une ligne
-        generer_ligne(taille_int, ligne) ;
-        //gérérer une grille
-        grille = generer_grille(taille_int) ;
-
         if (choix_masque_char == '1')
             choix_masque_int = 1;
         else if (choix_masque_char == '2')
@@ -42,6 +37,11 @@ int main() {
 
 
         grille = creer_matrice(taille_int);
+
+        //générer une ligne
+        generer_ligne(taille_int, ligne) ;
+        //gérérer une grille
+        grille = generer_grille(taille_int) ;
         switch (taille_int) {
             case 4:
                 remplir_matrice4(grille);
