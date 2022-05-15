@@ -2,8 +2,7 @@
 
 int main() {
     char taille_char, choix_masque_char; // déclaration de la taille et de choix_masque en int
-    int i, taille_int, choix_masque_int, rejouer = 1;
-    int *ligne ;
+    int taille_int, choix_masque_int, rejouer = 1;
 
     CASE case_joueur;
     int **masque;
@@ -39,12 +38,6 @@ int main() {
 
         grille = creer_matrice(taille_int);
 
-        // Remplissage de la grille
-
-        //générer une ligne
-        generer_ligne(taille_int, ligne) ;
-        //gérérer une grille
-        grille = generer_grille(taille_int) ;
         switch (taille_int) {
             case 4:
                 remplir_matrice4(grille);
@@ -52,7 +45,7 @@ int main() {
             case 8:
                 remplir_matrice8(grille);
                 break;
-            }
+        }
 
         // Création du masque
 

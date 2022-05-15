@@ -1,4 +1,3 @@
-//
 // Created by Mikhaïl on 4/6/2022.
 //
 
@@ -111,17 +110,17 @@ void afficher_grille(int *grille[16], int *masque[16], int taille) { // Fonction
 CASE saisir_case(int taille) {
     CASE case_joueur;
     do {
-        printf("Quelle ligne ?\n");
+        printf("Saisissez une ligne :\n");
         fflush(stdin);
         scanf("%d", &case_joueur.ligne);
         case_joueur.ligne--;
 
-        printf("Quelle colonne ?\n");
+        printf("Saisissez une colonne :\n");
         fflush(stdin);
         scanf("%d", &case_joueur.colonne);
         case_joueur.colonne--;
 
-        printf("Quel chiffre ?\n");
+        printf("Saisissez un chiffre :\n");
         fflush(stdin);
         scanf("%d", &case_joueur.chiffre);
 
@@ -244,7 +243,7 @@ int afficher_indice(int *grille[16], int *masque[16], int taille, int utilisateu
     int retour_indice;
     if (utilisateur == 0) { // Si l'utilisateur est un joueur
         do {
-            printf("Voulez-vous un indice ? o\\n : \n");
+            printf("Voulez-vous utiliser un indice ? o\\n : \n");
             scanf(" %c", &reponse_indice);
         } while (reponse_indice != 'o' && reponse_indice != 'n');
     }
@@ -291,7 +290,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille, int ut
             // Vérification du haut
             if (ligne >= 2) {
                 if ((verifier_haut(grille, masque, case_temp) == 0 || verifier_haut(grille, masque, case_temp2) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
-                    printf("Les deux cases en haut de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne - 1][case_temp.colonne]);
+                    printf("Les deux cases en haut de la case %d %d sont deja a la valeur %d, il faut y en inserer une autre\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne - 1][case_temp.colonne]);
                     if (utilisateur) { // Si c'est l'ordinateur qui joue
                         masque[case_temp.ligne][case_temp.colonne] = 1; // On affiche la valeur
                         Sleep(3000);
@@ -303,7 +302,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille, int ut
             // Vérification du bas
             if (ligne < taille - 2) {
                 if ((verifier_bas(grille, masque, case_temp, taille) == 0 || verifier_bas(grille, masque, case_temp2, taille) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
-                    printf("Les deux cases en bas de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne + 1][case_temp.colonne]);
+                    printf("Les deux cases en bas de la case %d %d sont deja a la valeur %d, il faut y en inserer une autre\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne + 1][case_temp.colonne]);
                     if (utilisateur) { // Si c'est l'ordinateur qui joue
                         masque[case_temp.ligne][case_temp.colonne] = 1; // On affiche la valeur
                         Sleep(3000);
@@ -315,7 +314,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille, int ut
             // Vérification de la gauche
             if (colonne >= 2) {
                 if ((verifier_gauche(grille, masque, case_temp) == 0 || verifier_gauche(grille, masque, case_temp2) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
-                    printf("Les deux cases a gauche de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne][case_temp.colonne - 1]);
+                    printf("Les deux cases a gauche de la case %d %d sont deja a la valeur %d, il faut y en inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne][case_temp.colonne - 1]);
                     if (utilisateur) { // Si c'est l'ordinateur qui joue
                         masque[case_temp.ligne][case_temp.colonne] = 1; // On affiche la valeur
                         Sleep(3000);
@@ -327,7 +326,7 @@ int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille, int ut
             // Vérification de la droite
             if (colonne < taille - 2) {
                 if ((verifier_droite(grille, masque, case_temp, taille) == 0 || verifier_droite(grille, masque, case_temp2, taille) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
-                    printf("Les deux cases a droite de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne][case_temp.colonne + 1]);
+                    printf("Les deux cases a droite de la case %d %d sont deja a la valeur %d, il faut y en inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne][case_temp.colonne + 1]);
                     if (utilisateur) { // Si c'est l'ordinateur qui joue
                         masque[case_temp.ligne][case_temp.colonne] = 1; // On affiche la valeur
                         Sleep(3000);
@@ -511,7 +510,7 @@ int **saisir_masque(int taille) {
             for (j = 0; j < taille; j++) {
                 do {
 
-                    printf("Entrez une valeur pour la ligne %d et colonne %d:\n", i + 1, j + 1);
+                    printf("Entrez une valeur pour la ligne %d et la colonne %d :\n", i + 1, j + 1);
                     fflush(stdin);
                     scanf(" %c", &saisie_case);
                 } while ((int) saisie_case < '0' || (int) saisie_case > '1');
@@ -571,7 +570,7 @@ int jeu_ordinateur(int **grille, int **masque, int taille) {
         retour_indice = afficher_indice(grille, masque, taille, 1);
 
         if (retour_indice == 0) {
-            printf("Il n'y a pas assez d'information pour vous donner un indice... Il faut tenter quelque chose\n");
+            printf("Il n'y a pas assez d'informations pour vous donner un indice... Il faut tenter quelque chose\n");
             changement_case = 0;
             do {
                 // On initialise la case de l'ordinateur aléatoirement
@@ -698,7 +697,7 @@ int verification_grille(int **grille, int taille) {
 }
 
 
-void generer_grille (int **grille, int taille) {
+void generer_grille(int **grille, int taille) {
     srand(time(NULL));
 
     int **grille_auto = (int **) malloc(taille * sizeof(int *)); //créer une grille contennant 0 ou 1
