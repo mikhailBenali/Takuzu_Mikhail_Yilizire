@@ -2,7 +2,6 @@
 // Created by Mikhaïl on 4/6/2022.
 //
 
-// todo saisie sécurisée de ligne et de colonne
 #include "takuzu.h"
 
 int nb_vies = 3;
@@ -196,7 +195,7 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
 
     int nb_verif = 0;
     int verif_ok = 0;
-    // vérifier que les deux chiffres (haut/bas/gauche/droite) set en bas soient affichés
+    // vérifier si les deux chiffres (haut/bas/gauche/droite) sont affichés
 
     // Vérification du haut
 
@@ -204,9 +203,7 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
         nb_verif++;
         if (verifier_haut(grille, masque, case_joueur)) {
             verif_ok++;
-        } //en cas de coup invalide : donner un indice à l'utilisateur
-        else
-            printf("Les deux cases du haut sont deja des %d\n", case_joueur.chiffre);
+        }
     }
 
     // Vérification du bas
@@ -214,8 +211,7 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
         nb_verif++;
         if (verifier_bas(grille, masque, case_joueur, taille)) {
             verif_ok++;
-        } else
-            printf("Les deux cases du bas sont deja des %d\n", case_joueur.chiffre);
+        }
     }
 
     // Vérification de la gauche
@@ -223,17 +219,14 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
         nb_verif++;
         if (verifier_gauche(grille, masque, case_joueur)) {
             verif_ok++;
-        } else
-            printf("Les deux cases de gauche sont deja des %d\n", case_joueur.chiffre);
+        }
     }
+
     // Vérification de la droite
     if (case_joueur.colonne < taille - 2) {
         nb_verif++;
         if (verifier_droite(grille, masque, case_joueur, taille)) {
             verif_ok++;
-
-        } else {
-            printf("Les deux cases de droite sont deja des %d\n", case_joueur.chiffre);
         }
     }
 
@@ -245,28 +238,176 @@ int coup_valide(int *grille[16], int *masque[16], CASE case_joueur, int taille) 
     }
 }
 
+
 int afficher_indice(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     char reponse_indice;
-    printf("Voulez-vous un indice ? o\\n : \n");
-    scanf(" %c", &reponse_indice);
+    int retour_indice;
+    do {
+        printf("Voulez-vous un indice ? o\\n : \n");
+        scanf(" %c", &reponse_indice);
+    } while (reponse_indice != 'o' && reponse_indice != 'n');
 
     if (reponse_indice == 'o') {
+        retour_indice = indice_suite_deux_cases(grille, masque, taille);
 
-        // Les deux premiers indices sont déjà implémentés dans coup_valide
-        if (case_joueur.ligne > 0 && case_joueur.ligne < taille) { // Si la ligne n'est pas au bord de la grille
-            if (grille[case_joueur.ligne - 1][case_joueur.colonne] ==
-                grille[case_joueur.ligne + 1][case_joueur.colonne]) { // On compare les lignes du dessus et du dessous
-                printf("Il y a la meme valeur au dessus et en dessous\nVous devez mettre l'autre valeur\n");
+        if (retour_indice == 0) { // Si aucune suite de deux cases n'est présente
+            retour_indice = indice_case_encadree(grille, masque, taille);
+
+            if (retour_indice == 0) { // Si aucune valeur ne peut être mise entre deux cases identiques
+                retour_indice = lignes_identiques(grille, masque, taille);
+
+                if (retour_indice == 0) { // Si aucune ligne n'est identique avec deux trous dedans
+                    printf("Il n'y a pas assez d'information pour vous donner un indice... Tentez quelque chose\n");
+                    return 0;
+                } else {
+                    return 1;
+                }
+            } else {
+                return 1;
             }
-        }
-        if (case_joueur.colonne > 0 && case_joueur.colonne < taille) {
-            if (grille[case_joueur.ligne][case_joueur.colonne - 1] ==
-                grille[case_joueur.ligne][case_joueur.colonne + 1]) {
-                printf("Il y a la meme valeur a droite et a gauche\nVous devez mettre l'autre valeur\n");
-            }
+        } else {
+            return 1;
         }
     }
 }
+
+int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille) {
+    CASE case_temp = {0, 0, 0}; // Il nous faut une variable de type CASE pour les fonction de vérification
+    CASE case_temp2 = {0, 0, 1};
+
+    for (int ligne = 0; ligne < taille; ligne++) {
+        for (int colonne = 0; colonne < taille; colonne++) {
+
+            case_temp.ligne = ligne;
+            case_temp.colonne = colonne;
+
+            case_temp2.ligne = ligne;
+            case_temp2.colonne = colonne;
+
+            // On doit verifier avec case_temp et case_temp2 car il faut tester avec 1 et 0 comme chiffre
+
+            // Vérification du haut
+            if (ligne >= 2) {
+                if ((verifier_haut(grille, masque, case_temp) == 0 || verifier_haut(grille, masque, case_temp2) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
+                    printf("Les deux cases en haut de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne - 1][case_temp.colonne]);
+                    return 1;
+                }
+            }
+
+            // Vérification du bas
+            if (ligne < taille - 2) {
+                if ((verifier_bas(grille, masque, case_temp, taille) == 0 || verifier_bas(grille, masque, case_temp2, taille) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
+                    printf("Les deux cases en bas de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne + 1][case_temp.colonne]);
+                    return 2;
+                }
+            }
+
+            // Vérification de la gauche
+            if (colonne >= 2) {
+                if ((verifier_gauche(grille, masque, case_temp) == 0 || verifier_gauche(grille, masque, case_temp2) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
+                    printf("Les deux cases de a gauche de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne][case_temp.colonne - 1]);
+                    return 3;
+                }
+            }
+
+            // Vérification de la droite
+            if (colonne < taille - 2) {
+                if ((verifier_droite(grille, masque, case_temp, taille) == 0 || verifier_droite(grille, masque, case_temp2, taille) == 0) && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est affichée et que deux cases adjacentes sont les mêmes
+                    printf("Les deux cases de a droite de la case %d %d sont deja a la valeur %d, il faut y inserer une autre.\n", case_temp.ligne + 1, case_temp.colonne + 1, grille[case_temp.ligne][case_temp.colonne + 1]);
+                    return 4;
+                }
+            }
+        }
+    }
+    return 0; // Si aucune vérification n'a aboutie
+}
+
+int indice_case_encadree(int *grille[16], int *masque[16], int taille) {
+    CASE case_temp = {0, 0, 0}; // Il nous faut une variable de type CASE pour les fonctions de vérification
+
+    for (int ligne = 0; ligne < taille; ligne++) {
+        for (int colonne = 0; colonne < taille; colonne++) {
+
+            case_temp.ligne = ligne;
+            case_temp.colonne = colonne;
+
+            if (case_temp.ligne > 0 && case_temp.ligne < taille - 1) { // Si la ligne n'est pas au bord de la grille
+                if (grille[case_temp.ligne - 1][case_temp.colonne] == grille[case_temp.ligne + 1][case_temp.colonne] && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est encadrée et non affichée
+                    if (masque[case_temp.ligne - 1][case_temp.colonne] == 1 && masque[case_temp.ligne + 1][case_temp.colonne] == 1) {
+                        printf("Il y a la meme valeur au dessus et en dessous de la case %d %d\nVous devez mettre une autre valeur\n", case_temp.ligne + 1, case_temp.colonne + 1);
+                        return 1;
+                    }
+                }
+            }
+            if (case_temp.colonne > 0 && case_temp.colonne < taille - 1) {
+                if (grille[case_temp.ligne][case_temp.colonne - 1] == grille[case_temp.ligne][case_temp.colonne + 1] && masque[case_temp.ligne][case_temp.colonne] == 0) { // Si la case est encadrée et non affichée
+                    if (masque[case_temp.ligne][case_temp.colonne - 1] == 1 && masque[case_temp.ligne][case_temp.colonne + 1] == 1) {
+                        printf("Il y a la meme valeur a droite et a gauche de la case %d %d\nVous devez mettre une autre valeur\n", case_temp.ligne + 1, case_temp.colonne + 1);
+                        return 2;
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+
+}
+
+int lignes_identiques(int *grille[16], int *masque[16], int taille) {
+    /*
+     * On va parcourir chaque ligne à la recherche de la première ligne pleine et stocker son indice
+     * On parcourt de nouveau à partir de là toutes les lignes
+     * Pour chaque colonne, on vérifie si les nombres correspondent tous
+     * S'ils correspondent sauf 2, on peut donner un indice
+     */
+
+    int indice_ligne_pleine = -1, nb_val_coincidant = 0, indice_ligne_identique = -1;
+    int trou_un = -1, trou_deux = -1;
+
+    for (int i = 0; i < taille; i++) { // À chaque ligne
+        int nb_val_affichees = 0;
+        for (int j = 0; j < taille; j++) {
+            if (masque[i][j] == 1) {
+                nb_val_affichees++; // On compte le nombre de valeurs affichées sur cette ligne
+            }
+        }
+        if (nb_val_affichees == taille) { // Si la ligne est pleine
+            indice_ligne_pleine = i;
+            break; // On sort de la boucle pour ne pas sélectionner une autre ligne pleine
+        }
+    }
+
+    // On parcourt de nouveau la grille à la recherche d'une ligne identique
+    if (indice_ligne_pleine != -1) {
+        for (int i = indice_ligne_pleine + 1; i < taille; ++i) {
+            nb_val_coincidant = 0;
+            for (int j = 0; j < taille; ++j) {
+                if (masque[i][j] == 1 && grille[indice_ligne_pleine][j] == grille[i][j]) { // Si la valeur est affichée et est la même que dans la ligne pleine
+                    nb_val_coincidant++;
+                }
+            }
+            // Si la ligne contient taille moins deux coincidences (2 trous), on note l'indice de la ligne
+            if (nb_val_coincidant == taille - 2) {
+                indice_ligne_identique = i;
+            }
+        }
+    }
+    if (indice_ligne_identique != -1) {
+        for (int j = 0; j < taille; ++j) { // On parcourt la ligne identique
+            if (masque[indice_ligne_identique][j] == 0 && trou_un == -1) { // Si la valeur n'est pas affichée dans le masque et que l'on a l'indice d'aucun trou
+                trou_un = j;
+            } else if (masque[indice_ligne_identique][j] == 0 && trou_un != -1) { // Si la valeur n'est pas affichée dans le masque et que l'on a l'indice du premier trou
+                trou_deux = j;
+            }
+        }// Ayant nos deux indices, on peut proposer un indice
+        printf("La ligne %d est presque identique a la %d\nElle comporte un %d a la case %d %d et un %d a la case %d %d\nOr il ne peut pas y avoir deux lignes identiques\n", indice_ligne_pleine+2, indice_ligne_identique+1, grille[indice_ligne_pleine][trou_un], indice_ligne_pleine + 1, trou_un + 1,
+               grille[indice_ligne_pleine][trou_deux], indice_ligne_pleine + 1, trou_deux + 1);
+        printf("Mettez donc les valeurs opposees dans les trous\n");
+        return 1; // Deux lignes ont été trouvées (presque) égales
+    }
+    return 0;
+}
+
 
 void coup_correct(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
     if (coup_valide(grille, masque, case_joueur, taille)) { // Si le coup est valide
@@ -309,6 +450,7 @@ int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille) {
         printf("Vous avez epuise vos 3 vies\n");
         replay = rejouer();
     }
+    return replay;
 }
 
 int **saisir_masque(int taille) {
@@ -370,4 +512,85 @@ int rejouer() {
     } else {
         return 0;
     }
+}
+
+// PARTIE 3
+
+int exces_repetitions(int *tab, int taille) {
+    int i, bool_repetition = 0; //la ligne ne contient pas trois fois la même valeur
+    printf("exces_repetitions\n");
+    i = 0;
+    while (i < taille - 2 && bool_repetition == 0) {
+        if (tab[i] == tab[i + 1] && (tab[i + 1] == tab[i + 2])) { bool_repetition = 1; }
+        else { i++; }
+    }
+    i = 1;
+    while (i < taille - 3 && bool_repetition == 0) {
+        if (tab[i] == tab[i + 1] && (tab[i + 1] == tab[i + 2])) { bool_repetition = 1; }
+        else { i++; }
+    }
+    printf("bool_repetition=%d\n", bool_repetition);
+    return bool_repetition;
+}
+
+void generer_ligne(int taille, int *ligne) { //corriger nb répétitions
+    int i;
+    srand(time(NULL));
+    int nb_binaire = 0;
+    for (i = 0; i < taille; i++) {
+        ligne[i] = (int *) malloc(taille * sizeof(int)); //prévoir de l'espace mémoire pour la ligne
+    }
+    if (taille == 4); // une ligne : un nombre binaire entre 0 et 15
+    {
+        // le nombre binaire de chaque ligne : maximum 15/4
+
+        do {
+            nb_binaire = 0;
+            for (i = 0; i < taille; i++) {
+                ligne[i] = rand() % 2;
+                printf("valeur = %d\n", ligne[i]);
+
+                if (ligne[i] == 1) {
+                    nb_binaire++;
+                    printf("nb_binaire=%d\n", nb_binaire);
+                }
+            }
+        } while (nb_binaire > 15 / 4 || exces_repetitions(ligne, taille)); //éviter qu'un même chiffre s'affiche 3 fois de suite ou que le nombre binaire dépasse 15/4
+        printf("nb_binaire=%d\n", nb_binaire);
+
+        if (taille == 8) // une ligne : un nombre binaire entre 0 et 255/8
+        {// le nombre binaire de chaque ligne : maximum 255/8
+            do {
+                nb_binaire = 0;
+                for (i = 0; i < taille; i++) {
+                    ligne[i] = rand() % 2;
+                    printf("valeur = %d\n", ligne[i]);
+
+                    if (ligne[i] == 1) {
+                        nb_binaire++;
+                        printf("nb_binaire=%d\n", nb_binaire);
+                    }
+                }
+            } while (nb_binaire > 255 / 8 || exces_repetitions(ligne, taille)); //éviter qu'un même chiffre s'affiche 3 fois de suite ou que le nombre binaire dépasse 15/4
+        }
+    }
+    for (int i = 0; i < taille; i++) {
+        printf("%d ", ligne[i]);
+    }
+    printf("\n");
+}
+
+int **generer_grille(int taille) {
+    int i, **grille = (int **) malloc(taille * sizeof(int *)); //prévoir de l'espace mémoire
+    for (i = 0; i < taille; i++) {
+        grille[i] = (int *) malloc(taille * sizeof(int)); //prévoir de l'espace mémoire
+    }
+
+    for (i = 0; i < taille; i++) {
+        generer_ligne(taille, grille[i]);
+    }
+    printf("grille generee automatiquement\n");
+    afficher_tab(grille, taille);
+
+    return grille;
 }

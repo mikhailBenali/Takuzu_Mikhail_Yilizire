@@ -55,7 +55,6 @@ int main() {
 
         if (choix_masque_int == 1) {
             masque = saisir_masque(taille_int);
-            afficher_tab(masque, taille_int);
         } else {
             masque = creer_masque(taille_int);
         }
