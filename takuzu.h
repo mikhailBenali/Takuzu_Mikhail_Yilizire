@@ -8,6 +8,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "time.h"
+#include "windows.h"
 
 /*
  *
@@ -23,6 +24,11 @@ typedef struct {
     int colonne;
     int chiffre;
 } CASE;
+
+typedef enum {
+    joueur,
+    ordinateur
+} UTILISATEUR;
 
 int **creer_matrice(int taille);
 
@@ -50,7 +56,7 @@ int verifier_droite(int *grille[16], int *masque[16], CASE case_joueur, int tail
 
 int verifier_gauche(int *grille[16], int *masque[16], CASE case_joueur);
 
-int afficher_indice(int *grille[16], int *masque[16], CASE case_joueur, int taille);
+int afficher_indice(int *grille[16], int *masque[16], int taille, int utilisateur);
 
 int jouer(int *grille[16], int *masque[16], CASE case_joueur, int taille);
 
@@ -65,10 +71,17 @@ void generer_ligne(int taille, int *ligne);
 int ** generer_grille(int taille);
 
 int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille);
+int indice_suite_deux_cases(int *grille[16], int *masque[16], int taille, int utilisateur);
 
-int indice_case_encadree(int *grille[16], int *masque[16], int taille);
+int indice_case_encadree(int *grille[16], int *masque[16], int taille, int utilisateur);
 
-int lignes_identiques(int *grille[16], int *masque[16], int taille);
+int lignes_identiques(int *grille[16], int *masque[16], int taille, int utilisateur);
+
+// PARTIE 2
+
+int jeu_ordinateur(int **grille, int **masque,int taille);
+
+// PARTIE 3
 
 void generer_ligne(int *ligne, int taille);
 
